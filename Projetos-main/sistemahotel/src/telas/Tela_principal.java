@@ -42,6 +42,10 @@ public class Tela_principal extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         teladefundo = new javax.swing.JDesktopPane();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         cadastro = new javax.swing.JMenu();
         Hospedes = new javax.swing.JMenu();
@@ -62,10 +66,7 @@ public class Tela_principal extends javax.swing.JFrame {
         Reserva = new javax.swing.JMenu();
         Cadastrarreserva = new javax.swing.JMenuItem();
         Consultarreserva = new javax.swing.JMenuItem();
-        Finalizarreserva = new javax.swing.JMenuItem();
         Vendas = new javax.swing.JMenu();
-        Produtosvendas = new javax.swing.JMenuItem();
-        Serviçosvendas = new javax.swing.JMenuItem();
         Financeiro = new javax.swing.JMenu();
         contasapagar = new javax.swing.JMenu();
         cadastrarcontas = new javax.swing.JMenuItem();
@@ -119,7 +120,7 @@ public class Tela_principal extends javax.swing.JFrame {
                 .addGap(39, 39, 39)
                 .addComponent(jSeparator1))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(221, Short.MAX_VALUE)
+                .addContainerGap(325, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -130,7 +131,7 @@ public class Tela_principal extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel3))))
-                .addContainerGap(221, Short.MAX_VALUE))
+                .addContainerGap(325, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,7 +145,7 @@ public class Tela_principal extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addContainerGap())
         );
@@ -153,11 +154,59 @@ public class Tela_principal extends javax.swing.JFrame {
         teladefundo.setLayout(teladefundoLayout);
         teladefundoLayout.setHorizontalGroup(
             teladefundoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1008, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         teladefundoLayout.setVerticalGroup(
             teladefundoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 483, Short.MAX_VALUE)
+            .addGap(0, 513, Short.MAX_VALUE)
+        );
+
+        jPanel2.setBackground(new java.awt.Color(153, 153, 255));
+
+        jLabel6.setText("Quartos");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         cadastro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Cadastro menor.png"))); // NOI18N
@@ -175,6 +224,11 @@ public class Tela_principal extends javax.swing.JFrame {
         Hospedes.add(Cadastrarhospede);
 
         Consultarhospede.setText("Consultar ");
+        Consultarhospede.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConsultarhospedeActionPerformed(evt);
+            }
+        });
         Hospedes.add(Consultarhospede);
 
         cadastro.add(Hospedes);
@@ -183,9 +237,19 @@ public class Tela_principal extends javax.swing.JFrame {
         Quartos.setText("Quartos ");
 
         casdastrarquartos.setText("Cadastrar ");
+        casdastrarquartos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                casdastrarquartosActionPerformed(evt);
+            }
+        });
         Quartos.add(casdastrarquartos);
 
         Consultarquartos.setText("Consultar ");
+        Consultarquartos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConsultarquartosActionPerformed(evt);
+            }
+        });
         Quartos.add(Consultarquartos);
 
         cadastro.add(Quartos);
@@ -194,9 +258,19 @@ public class Tela_principal extends javax.swing.JFrame {
         Funcionarios.setText("Funcionários ");
 
         Cadastrarfuncionario.setText("Cadastrar ");
+        Cadastrarfuncionario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CadastrarfuncionarioActionPerformed(evt);
+            }
+        });
         Funcionarios.add(Cadastrarfuncionario);
 
         Consultarfuncionario.setText("Consultar");
+        Consultarfuncionario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConsultarfuncionarioActionPerformed(evt);
+            }
+        });
         Funcionarios.add(Consultarfuncionario);
 
         cadastro.add(Funcionarios);
@@ -205,9 +279,19 @@ public class Tela_principal extends javax.swing.JFrame {
         Produtos.setText("Produtos");
 
         Cadastrarprodutos.setText("Cadastrar Prod.");
+        Cadastrarprodutos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CadastrarprodutosActionPerformed(evt);
+            }
+        });
         Produtos.add(Cadastrarprodutos);
 
         Consultarprodutos.setText("Consultar Prod.");
+        Consultarprodutos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConsultarprodutosActionPerformed(evt);
+            }
+        });
         Produtos.add(Consultarprodutos);
 
         cadastro.add(Produtos);
@@ -216,9 +300,19 @@ public class Tela_principal extends javax.swing.JFrame {
         Serviços.setText("Serviços");
 
         Cadastrarserviços.setText("Cadastrar Serviços");
+        Cadastrarserviços.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CadastrarserviçosActionPerformed(evt);
+            }
+        });
         Serviços.add(Cadastrarserviços);
 
         ConsultarServiços.setText("Consultar Serviços");
+        ConsultarServiços.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConsultarServiçosActionPerformed(evt);
+            }
+        });
         Serviços.add(ConsultarServiços);
 
         cadastro.add(Serviços);
@@ -239,25 +333,15 @@ public class Tela_principal extends javax.swing.JFrame {
         });
         Reserva.add(Consultarreserva);
 
-        Finalizarreserva.setText("Finalizar Reserva ");
-        Reserva.add(Finalizarreserva);
-
         jMenuBar1.add(Reserva);
 
         Vendas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Financeiro menor.png"))); // NOI18N
         Vendas.setText("Vendas   |");
-
-        Produtosvendas.setText("Produtos");
-        Produtosvendas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ProdutosvendasActionPerformed(evt);
+        Vendas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                VendasMouseClicked(evt);
             }
         });
-        Vendas.add(Produtosvendas);
-
-        Serviçosvendas.setText("Serviços");
-        Vendas.add(Serviçosvendas);
-
         jMenuBar1.add(Vendas);
 
         Financeiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/images financeiro enor.png"))); // NOI18N
@@ -400,14 +484,19 @@ public class Tela_principal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(teladefundo)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(teladefundo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(teladefundo)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(teladefundo)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -451,12 +540,102 @@ public class Tela_principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_SairMouseClicked
 
-    private void ProdutosvendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProdutosvendasActionPerformed
+    private void VendasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VendasMouseClicked
         // TODO add your handling code here:
-        Vendaprodutos tela2 = new Vendaprodutos();
-        teladefundo.add(tela2);
-        tela2.setVisible(true);
-    }//GEN-LAST:event_ProdutosvendasActionPerformed
+        Vendaprodutos vendas = new Vendaprodutos();
+      teladefundo.add(vendas);
+      vendas.setVisible(true);
+      
+    }//GEN-LAST:event_VendasMouseClicked
+
+    private void casdastrarquartosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_casdastrarquartosActionPerformed
+        // TODO add your handling code here:
+        
+        cadquarto quartos = new cadquarto();
+        teladefundo.add(quartos);
+        quartos.setVisible(true);
+        
+        
+    }//GEN-LAST:event_casdastrarquartosActionPerformed
+
+    private void CadastrarfuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadastrarfuncionarioActionPerformed
+        // TODO add your handling code here:
+        
+        cadfuncionarios funcionario = new cadfuncionarios ();
+        teladefundo.add(funcionario);
+        funcionario.setVisible(true);
+                
+        
+    }//GEN-LAST:event_CadastrarfuncionarioActionPerformed
+
+    private void CadastrarprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadastrarprodutosActionPerformed
+        cadprodutos produtos = new cadprodutos();
+        teladefundo.add(produtos);
+        produtos.setVisible(true);
+
+
+
+    }//GEN-LAST:event_CadastrarprodutosActionPerformed
+
+    private void CadastrarserviçosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadastrarserviçosActionPerformed
+        // TODO add your handling code here:
+        cadserviços serviços = new cadserviços();
+        teladefundo.add(serviços);
+        serviços.setVisible(true);
+        
+        
+        
+    }//GEN-LAST:event_CadastrarserviçosActionPerformed
+
+    private void ConsultarhospedeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarhospedeActionPerformed
+        // TODO add your handling code here:
+        conshospedes consultarh = new conshospedes();
+        teladefundo.add(consultarh);
+        consultarh.setVisible(true);
+        
+        
+        
+    }//GEN-LAST:event_ConsultarhospedeActionPerformed
+
+    private void ConsultarquartosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarquartosActionPerformed
+        // TODO add your handling code here:
+        consquartos consultarq = new consquartos();
+        teladefundo.add(consultarq);
+        consultarq.setVisible(true);
+
+
+    }//GEN-LAST:event_ConsultarquartosActionPerformed
+
+    private void ConsultarfuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarfuncionarioActionPerformed
+        // TODO add your handling code here:
+        consfuncionario consultarf = new consfuncionario();
+        teladefundo.add(consultarf);
+        consultarf.setVisible(true);
+        
+        
+
+
+
+    }//GEN-LAST:event_ConsultarfuncionarioActionPerformed
+
+    private void ConsultarprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarprodutosActionPerformed
+        // TODO add your handling code here:
+
+        consprodutos consultarp = new consprodutos();
+        teladefundo.add(consultarp);
+        consultarp.setVisible(true);
+
+    }//GEN-LAST:event_ConsultarprodutosActionPerformed
+
+    private void ConsultarServiçosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarServiçosActionPerformed
+        // TODO add your handling code here:
+
+        consserviços consultars = new consserviços();
+        teladefundo.add(consultars);
+        consultars.setVisible(true);
+
+
+    }//GEN-LAST:event_ConsultarServiçosActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Cadastrarfuncionario;
@@ -474,13 +653,11 @@ public class Tela_principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem Consultarreserva;
     private javax.swing.JMenuItem Fazerbackup;
     private javax.swing.JMenu Ferramentas;
-    private javax.swing.JMenuItem Finalizarreserva;
     private javax.swing.JMenu Financeiro;
     private javax.swing.JMenu Funcionarios;
     private javax.swing.JMenu Hospedes;
     private javax.swing.JMenu Logoff;
     private javax.swing.JMenu Produtos;
-    private javax.swing.JMenuItem Produtosvendas;
     private javax.swing.JMenu Quartos;
     private javax.swing.JMenu Relatorios;
     private javax.swing.JMenu Reserva;
@@ -488,7 +665,6 @@ public class Tela_principal extends javax.swing.JFrame {
     private javax.swing.JMenu Sair;
     private javax.swing.JMenu Segurança;
     private javax.swing.JMenu Serviços;
-    private javax.swing.JMenuItem Serviçosvendas;
     private javax.swing.JMenu Teladefundo;
     private javax.swing.JMenu Vendas;
     private javax.swing.JMenuItem balanço;
@@ -503,6 +679,7 @@ public class Tela_principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JMenu jMenu16;
     private javax.swing.JMenu jMenu17;
     private javax.swing.JMenu jMenu18;
@@ -519,7 +696,10 @@ public class Tela_principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem33;
     private javax.swing.JMenuItem jMenuItem34;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JMenuItem sobresistema;
     private javax.swing.JDesktopPane teladefundo;
     // End of variables declaration//GEN-END:variables
