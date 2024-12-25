@@ -422,10 +422,6 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
-                  <Component id="jSeparator1" max="32767" attributes="0"/>
-              </Group>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace pref="221" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -444,6 +440,7 @@
                   </Group>
                   <EmptySpace pref="221" max="32767" attributes="0"/>
               </Group>
+              <Component id="jSeparator1" alignment="1" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
