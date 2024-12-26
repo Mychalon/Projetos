@@ -20,10 +20,10 @@ import javax.swing.JTextField;
  *
  * @author Mycha
  */
-public class Tela_principal extends javax.swing.JFrame {
-private JPanel painelQuartos; // Painel onde os botões de quartos serão adicionados
+    public class Tela_principal extends javax.swing.JFrame {
+    private JPanel painelQuartos; // Painel onde os botões de quartos serão adicionados
     private JTextField jTextField1;  // Campo para nome do quarto
-    private JTextField VALOR;  // Campo para valor do quarto
+    
 
     /**
      * Creates new form Tela_principal
@@ -32,11 +32,7 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
        
-        // Configuração do JFrame
-        setTitle("Tela Principal");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-
+      
         // Inicializa o painel de quartos
         painelQuartos = new JPanel();
         painelQuartos.setLayout(new FlowLayout());  // Usando FlowLayout para os botões
@@ -47,8 +43,7 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
 
         // Campos para nome e valor do quarto
         jTextField1 = new JTextField(15);
-        VALOR = new JTextField(15);
-
+        
         // Botão para adicionar quarto
         JButton jButton2 = new JButton("Adicionar Quarto");
         jButton2.addActionListener(evt -> jButton2ActionPerformed(evt));
@@ -58,7 +53,6 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
         panel.add(new JLabel("Nome do Quarto:"));
         panel.add(jTextField1);
         panel.add(new JLabel("Valor do Quarto:"));
-        panel.add(VALOR);
         panel.add(jButton2);
 
         // Adiciona o painel de entrada e botão à tela
@@ -84,8 +78,10 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         teladefundo = new javax.swing.JDesktopPane();
-        quartosPanel = new javax.swing.JPanel();
+        quartosPainel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
+        JScrollPane = new javax.swing.JScrollPane();
+        jPanel2 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         cadastro = new javax.swing.JMenu();
         Hospedes = new javax.swing.JMenu();
@@ -201,25 +197,45 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
             .addGap(0, 513, Short.MAX_VALUE)
         );
 
-        quartosPanel.setBackground(new java.awt.Color(153, 153, 255));
+        quartosPainel.setBackground(new java.awt.Color(153, 153, 255));
 
         jLabel6.setText("Quartos");
 
-        javax.swing.GroupLayout quartosPanelLayout = new javax.swing.GroupLayout(quartosPanel);
-        quartosPanel.setLayout(quartosPanelLayout);
-        quartosPanelLayout.setHorizontalGroup(
-            quartosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, quartosPanelLayout.createSequentialGroup()
-                .addContainerGap(147, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addContainerGap(145, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 320, Short.MAX_VALUE)
         );
-        quartosPanelLayout.setVerticalGroup(
-            quartosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(quartosPanelLayout.createSequentialGroup()
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 471, Short.MAX_VALUE)
+        );
+
+        JScrollPane.setViewportView(jPanel2);
+
+        javax.swing.GroupLayout quartosPainelLayout = new javax.swing.GroupLayout(quartosPainel);
+        quartosPainel.setLayout(quartosPainelLayout);
+        quartosPainelLayout.setHorizontalGroup(
+            quartosPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(quartosPainelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(quartosPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, quartosPainelLayout.createSequentialGroup()
+                        .addGap(0, 141, Short.MAX_VALUE)
+                        .addComponent(jLabel6)
+                        .addGap(0, 139, Short.MAX_VALUE))
+                    .addComponent(JScrollPane))
+                .addContainerGap())
+        );
+        quartosPainelLayout.setVerticalGroup(
+            quartosPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(quartosPainelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(JScrollPane)
+                .addContainerGap())
         );
 
         cadastro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Cadastro menor.png"))); // NOI18N
@@ -500,14 +516,14 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
             .addGroup(layout.createSequentialGroup()
                 .addComponent(teladefundo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(quartosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(quartosPainel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(teladefundo)
-                    .addComponent(quartosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(quartosPainel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -669,6 +685,7 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
     private javax.swing.JMenu Financeiro;
     private javax.swing.JMenu Funcionarios;
     private javax.swing.JMenu Hospedes;
+    private javax.swing.JScrollPane JScrollPane;
     private javax.swing.JMenu Logoff;
     private javax.swing.JMenu Produtos;
     private javax.swing.JMenu Quartos;
@@ -709,8 +726,9 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
     private javax.swing.JMenuItem jMenuItem33;
     private javax.swing.JMenuItem jMenuItem34;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JPanel quartosPanel;
+    private javax.swing.JPanel quartosPainel;
     private javax.swing.JMenuItem sobresistema;
     private javax.swing.JDesktopPane teladefundo;
     // End of variables declaration//GEN-END:variables
