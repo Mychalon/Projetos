@@ -315,7 +315,7 @@ public class cadquarto extends javax.swing.JInternalFrame {
     }
 
     public static void main(String[] args) {
-        // Inicializa a tela principal
+        // Inicializa a tela principal alteraçoes de amor
         SwingUtilities.invokeLater(() -> {
             Tela_principal frame = new Tela_principal();
             frame.setVisible(true);
