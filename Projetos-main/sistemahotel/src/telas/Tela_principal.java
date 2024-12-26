@@ -5,15 +5,25 @@
  */
 package telas;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 /**
  *
  * @author Mycha
  */
 public class Tela_principal extends javax.swing.JFrame {
+private JPanel painelQuartos; // Painel onde os botões de quartos serão adicionados
+    private JTextField jTextField1;  // Campo para nome do quarto
+    private JTextField VALOR;  // Campo para valor do quarto
 
     /**
      * Creates new form Tela_principal
@@ -21,7 +31,39 @@ public class Tela_principal extends javax.swing.JFrame {
     public Tela_principal() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
-        
+       
+        // Configuração do JFrame
+        setTitle("Tela Principal");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Inicializa o painel de quartos
+        painelQuartos = new JPanel();
+        painelQuartos.setLayout(new FlowLayout());  // Usando FlowLayout para os botões
+
+        // Adiciona o painel dentro de um JScrollPane para permitir rolagem
+        JScrollPane scrollPane = new JScrollPane(painelQuartos);
+        getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+        // Campos para nome e valor do quarto
+        jTextField1 = new JTextField(15);
+        VALOR = new JTextField(15);
+
+        // Botão para adicionar quarto
+        JButton jButton2 = new JButton("Adicionar Quarto");
+        jButton2.addActionListener(evt -> jButton2ActionPerformed(evt));
+
+        // Layout para os campos de entrada e botão
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Nome do Quarto:"));
+        panel.add(jTextField1);
+        panel.add(new JLabel("Valor do Quarto:"));
+        panel.add(VALOR);
+        panel.add(jButton2);
+
+        // Adiciona o painel de entrada e botão à tela
+        getContentPane().add(panel, BorderLayout.NORTH);
+
         
     }
 
@@ -42,10 +84,8 @@ public class Tela_principal extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         teladefundo = new javax.swing.JDesktopPane();
-        jPanel2 = new javax.swing.JPanel();
+        quartosPanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         cadastro = new javax.swing.JMenu();
         Hospedes = new javax.swing.JMenu();
@@ -120,7 +160,7 @@ public class Tela_principal extends javax.swing.JFrame {
                 .addGap(39, 39, 39)
                 .addComponent(jSeparator1))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(325, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -131,7 +171,7 @@ public class Tela_principal extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel3))))
-                .addContainerGap(325, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,55 +194,31 @@ public class Tela_principal extends javax.swing.JFrame {
         teladefundo.setLayout(teladefundoLayout);
         teladefundoLayout.setHorizontalGroup(
             teladefundoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 887, Short.MAX_VALUE)
         );
         teladefundoLayout.setVerticalGroup(
             teladefundoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 513, Short.MAX_VALUE)
         );
 
-        jPanel2.setBackground(new java.awt.Color(153, 153, 255));
+        quartosPanel.setBackground(new java.awt.Color(153, 153, 255));
 
         jLabel6.setText("Quartos");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Quartos Duplo", "Quartos Triplo", "Quartos Quadruplo"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        javax.swing.GroupLayout quartosPanelLayout = new javax.swing.GroupLayout(quartosPanel);
+        quartosPanel.setLayout(quartosPanelLayout);
+        quartosPanelLayout.setHorizontalGroup(
+            quartosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, quartosPanelLayout.createSequentialGroup()
+                .addContainerGap(147, Short.MAX_VALUE)
                 .addComponent(jLabel6)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(145, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        quartosPanelLayout.setVerticalGroup(
+            quartosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(quartosPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -482,16 +498,16 @@ public class Tela_principal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(teladefundo)
+                .addComponent(teladefundo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(quartosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(teladefundo)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(quartosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -693,11 +709,13 @@ public class Tela_principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem33;
     private javax.swing.JMenuItem jMenuItem34;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JPanel quartosPanel;
     private javax.swing.JMenuItem sobresistema;
     private javax.swing.JDesktopPane teladefundo;
     // End of variables declaration//GEN-END:variables
+
+    private void jButton2ActionPerformed(ActionEvent evt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
