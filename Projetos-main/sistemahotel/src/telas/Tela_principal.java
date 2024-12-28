@@ -5,58 +5,26 @@
  */
 package telas;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 
 /**
  *
  * @author Mycha
  */
     public class Tela_principal extends javax.swing.JFrame {
-    private JPanel painelQuartos; // Painel onde os botões de quartos serão adicionados
-    private JTextField jTextField1;  // Campo para nome do quarto
-    
 
-    /**
+// Campo para nome do quarto
+    // Painel onde os botões de quartos serão adicionados
+        /**
      * Creates new form Tela_principal
      */
     public Tela_principal() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
-       
-      
-        // Inicializa o painel de quartos
-        painelQuartos = new JPanel();
-        painelQuartos.setLayout(new FlowLayout());  // Usando FlowLayout para os botões
-
-        // Adiciona o painel dentro de um JScrollPane para permitir rolagem
-        JScrollPane scrollPane = new JScrollPane(painelQuartos);
-        getContentPane().add(scrollPane, BorderLayout.CENTER);
-
-        // Campos para nome e valor do quarto
-        jTextField1 = new JTextField(15);
         
-        // Botão para adicionar quarto
-        JButton jButton2 = new JButton("Adicionar Quarto");
-        jButton2.addActionListener(evt -> jButton2ActionPerformed(evt));
-
-        // Layout para os campos de entrada e botão
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("Nome do Quarto:"));
-        panel.add(jTextField1);
-        panel.add(new JLabel("Valor do Quarto:"));
-        panel.add(jButton2);
-
-        // Adiciona o painel de entrada e botão à tela
-        getContentPane().add(panel, BorderLayout.NORTH);
+        
 
         
     }
