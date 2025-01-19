@@ -13,9 +13,14 @@ public class cadprodutos extends javax.swing.JInternalFrame {
     /**
      * Creates new form cadprodutos
      */
-    public cadprodutos() {
+     Tela_principal tela_principal;
+    public cadprodutos(Tela_principal tela_principal) {
         initComponents();
-       
+        this.tela_principal = tela_principal;
+    }
+
+    cadprodutos() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     /**
@@ -128,8 +133,11 @@ public class cadprodutos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTextFieldCodigoActionPerformed
 
     private void cadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastrarActionPerformed
-   // Obter os dados inseridos
-       
+       // Obter os dados inseridos
+        this.dispose();
+        consprodutos c = new consprodutos();
+        c.setVisible(true);
+    
     }//GEN-LAST:event_cadastrarActionPerformed
 
 

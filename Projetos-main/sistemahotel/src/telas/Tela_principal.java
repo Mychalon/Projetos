@@ -5,6 +5,7 @@
  */
 package telas;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -25,10 +26,10 @@ import javax.swing.JOptionPane;
         setExtendedState(MAXIMIZED_BOTH);
         
         
-
-        
     }
-
+    public void incluirTela(Component tela){
+            teladefundo.add(tela);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
