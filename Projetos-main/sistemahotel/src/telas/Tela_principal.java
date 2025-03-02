@@ -6,9 +6,11 @@
 package telas;
 
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import model.WrapLayout;
 
 /**
  *
@@ -25,6 +27,8 @@ import javax.swing.JOptionPane;
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
         
+        // Define o layout do quartosPainel
+    quartosPainel.setLayout(new WrapLayout(FlowLayout.LEFT, 10, 10));
         
     }
     public void incluirTela(Component tela){
@@ -48,9 +52,6 @@ import javax.swing.JOptionPane;
         jLabel5 = new javax.swing.JLabel();
         teladefundo = new javax.swing.JDesktopPane();
         quartosPainel = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        JScrollPane = new javax.swing.JScrollPane();
-        jPanel2 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         cadastro = new javax.swing.JMenu();
         Hospedes = new javax.swing.JMenu();
@@ -163,48 +164,21 @@ import javax.swing.JOptionPane;
         );
         teladefundoLayout.setVerticalGroup(
             teladefundoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 513, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         quartosPainel.setBackground(new java.awt.Color(153, 153, 255));
-
-        jLabel6.setText("Quartos");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 320, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 471, Short.MAX_VALUE)
-        );
-
-        JScrollPane.setViewportView(jPanel2);
+        quartosPainel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Quartos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 18))); // NOI18N
 
         javax.swing.GroupLayout quartosPainelLayout = new javax.swing.GroupLayout(quartosPainel);
         quartosPainel.setLayout(quartosPainelLayout);
         quartosPainelLayout.setHorizontalGroup(
             quartosPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(quartosPainelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(quartosPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, quartosPainelLayout.createSequentialGroup()
-                        .addGap(0, 141, Short.MAX_VALUE)
-                        .addComponent(jLabel6)
-                        .addGap(0, 139, Short.MAX_VALUE))
-                    .addComponent(JScrollPane))
-                .addContainerGap())
+            .addGap(0, 324, Short.MAX_VALUE)
         );
         quartosPainelLayout.setVerticalGroup(
             quartosPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(quartosPainelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(JScrollPane)
-                .addContainerGap())
+            .addGap(0, 481, Short.MAX_VALUE)
         );
 
         cadastro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Cadastro menor.png"))); // NOI18N
@@ -547,11 +521,11 @@ import javax.swing.JOptionPane;
     }//GEN-LAST:event_VendasMouseClicked
 
     private void casdastrarquartosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_casdastrarquartosActionPerformed
-        // TODO add your handling code here:
-        
-        cadquarto quartos = new cadquarto();
-        teladefundo.add(quartos);
-        quartos.setVisible(true);
+  
+      // TODO add your handling code here:
+    cadquarto quartos = new cadquarto(quartosPainel); // Passa o quartosPainel como argumento
+    teladefundo.add(quartos); // Adiciona a tela de cadastro de quartos ao painel principal
+    quartos.setVisible(true); // Torna a tela visível
         
         
     }//GEN-LAST:event_casdastrarquartosActionPerformed
@@ -654,7 +628,6 @@ import javax.swing.JOptionPane;
     private javax.swing.JMenu Financeiro;
     private javax.swing.JMenu Funcionarios;
     private javax.swing.JMenu Hospedes;
-    private javax.swing.JScrollPane JScrollPane;
     private javax.swing.JMenu Logoff;
     private javax.swing.JMenu Produtos;
     private javax.swing.JMenu Quartos;
@@ -678,7 +651,6 @@ import javax.swing.JOptionPane;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JMenu jMenu16;
     private javax.swing.JMenu jMenu17;
     private javax.swing.JMenu jMenu18;
@@ -695,7 +667,6 @@ import javax.swing.JOptionPane;
     private javax.swing.JMenuItem jMenuItem33;
     private javax.swing.JMenuItem jMenuItem34;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel quartosPainel;
     private javax.swing.JMenuItem sobresistema;

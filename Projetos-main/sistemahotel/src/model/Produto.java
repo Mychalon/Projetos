@@ -10,10 +10,6 @@ package model;
  */
     // Classe Produto
     public class Produto {
-        
-        
-        
-        
         private String Nome;
         private String Cod;
         private String Quant;

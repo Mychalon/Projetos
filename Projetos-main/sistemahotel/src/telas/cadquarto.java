@@ -5,6 +5,7 @@
 package telas;
 
 import java.awt.Color;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -14,15 +15,16 @@ import javax.swing.SwingUtilities;
  * @author HOTEL FENIX
  */
 public class cadquarto extends javax.swing.JInternalFrame {
-
+private javax.swing.JPanel quartosPainel; // Variável para armazenar a referência do quartosPainel
     /**
      * Creates new form cadquarto
      */
-    public cadquarto() {
-        initComponents();
-        
-        
-    }
+    public cadquarto(javax.swing.JPanel quartosPainel) {
+    this.quartosPainel = quartosPainel; // Armazena a referência do quartosPainel
+    initComponents(); // Inicializa os componentes da interface
+}
+
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -239,35 +241,45 @@ public class cadquarto extends javax.swing.JInternalFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        // Obtém o nome e valor do quarto
-        String nomeQuarto = jTextField1.getText(); // Obtém o nome ou número do quarto
-       
+         // Obtém o nome do quarto
+    String nomeQuarto = jTextField1.getText();
 
-        // Verifica se os campos não estão vazios
-        if (nomeQuarto.isEmpty() ) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos!", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Cria um botão representando o quarto
-        JButton quartoButton = new JButton(nomeQuarto);
-        quartoButton.setBackground(Color.GREEN); // Cor para quarto disponível
-
-        // Adiciona ação ao botão
-        quartoButton.addActionListener(e -> {
-            if (quartoButton.getBackground().equals(Color.GREEN)) {
-                quartoButton.setBackground(Color.RED); // Ocupado
-            } else {
-                quartoButton.setBackground(Color.GREEN); // Disponível
-            }
-        });
-
-       
-
-        // Limpa os campos de entrada
-        jTextField1.setText("");
-      
+    // Verifica se o campo não está vazio
+    if (nomeQuarto.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Preencha o nome do quarto!", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
     }
+
+    // Cria um botão representando o quarto
+    JButton quartoButton = new JButton(nomeQuarto);
+    quartoButton.setBackground(Color.GREEN); // Cor para quarto disponível
+
+    // Carrega os ícones para os estados disponível e ocupado
+    ImageIcon iconePortaVerde = new ImageIcon(getClass().getResource("/imagens/porta_verde.png")); // Ícone da porta verde
+    ImageIcon iconePortaVermelha = new ImageIcon(getClass().getResource("/imagens/porta_vermelha.png")); // Ícone da porta vermelha
+
+    // Define o ícone inicial (porta verde)
+    quartoButton.setIcon(iconePortaVerde);
+
+    // Adiciona ação ao botão (alternar entre disponível e ocupado)
+    quartoButton.addActionListener(e -> {
+        if (quartoButton.getBackground().equals(Color.GREEN)) {
+            quartoButton.setBackground(Color.RED); // Ocupado
+            quartoButton.setIcon(iconePortaVermelha); // Altera para o ícone da porta vermelha
+        } else {
+            quartoButton.setBackground(Color.GREEN); // Disponível
+            quartoButton.setIcon(iconePortaVerde); // Volta para o ícone da porta verde
+        }
+    });
+
+    // Adiciona o botão ao quartosPainel
+    quartosPainel.add(quartoButton);
+    quartosPainel.revalidate(); // Atualiza o layout do painel
+    quartosPainel.repaint(); // Redesenha o painel
+
+    // Limpa o campo de entrada
+    jTextField1.setText("");
+}
 
     public static void main(String[] args) {
         // Inicializa a tela principal

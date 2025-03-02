@@ -21,6 +21,8 @@ abstract public class Pessoa {
     protected String email;
     protected String rg;
     protected String cnpj;
+    
+    
 
     public Pessoa(int id, String nome) {
         this.id = id;
