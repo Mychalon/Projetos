@@ -5,24 +5,27 @@
 package telas;
 
 import java.awt.Color;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import model.Quarto;
 
 /**
  *
  * @author HOTEL FENIX
  */
 public class cadquarto extends javax.swing.JInternalFrame {
-
+private javax.swing.JPanel quartosPainel; // Variável para armazenar a referência do quartosPainel
     /**
      * Creates new form cadquarto
      */
-    public cadquarto() {
-        initComponents();
-        
-        
-    }
+    public cadquarto(javax.swing.JPanel quartosPainel) {
+    this.quartosPainel = quartosPainel; // Armazena a referência do quartosPainel
+    initComponents(); // Inicializa os componentes da interface
+}
+
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -239,35 +242,57 @@ public class cadquarto extends javax.swing.JInternalFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        // Obtém o nome e valor do quarto
-        String nomeQuarto = jTextField1.getText(); // Obtém o nome ou número do quarto
-       
+         // Obtém o nome do quarto
+    String nomeQuarto = jTextField1.getText();
 
-        // Verifica se os campos não estão vazios
-        if (nomeQuarto.isEmpty() ) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos!", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Cria um botão representando o quarto
-        JButton quartoButton = new JButton(nomeQuarto);
-        quartoButton.setBackground(Color.GREEN); // Cor para quarto disponível
-
-        // Adiciona ação ao botão
-        quartoButton.addActionListener(e -> {
-            if (quartoButton.getBackground().equals(Color.GREEN)) {
-                quartoButton.setBackground(Color.RED); // Ocupado
-            } else {
-                quartoButton.setBackground(Color.GREEN); // Disponível
-            }
-        });
-
-       
-
-        // Limpa os campos de entrada
-        jTextField1.setText("");
-      
+    // Verifica se o campo não está vazio
+    if (nomeQuarto.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Preencha o nome do quarto!", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
     }
+
+    // Cria um objeto Quarto
+    Quarto quarto = new Quarto(nomeQuarto);
+
+    // Cria um botão representando o quarto
+    JButton quartoButton = new JButton(nomeQuarto);
+
+    // Carrega os ícones para os estados disponível e ocupado
+    ImageIcon iconePortaVerde = new ImageIcon(getClass().getResource("/imagens/porta_verde.png")); // Ícone da porta verde
+    ImageIcon iconePortaVermelha = new ImageIcon(getClass().getResource("/imagens/porta_vermelha.png")); // Ícone da porta vermelha
+
+    // Define o ícone e a cor inicial (verde se não houver hóspede, vermelho se houver)
+    if (quarto.estaOcupado()) {
+        quartoButton.setBackground(Color.RED);
+        quartoButton.setIcon(iconePortaVermelha);
+    } else {
+        quartoButton.setBackground(Color.GREEN);
+        quartoButton.setIcon(iconePortaVerde);
+    }
+
+    // Adiciona ação ao botão (abrir a janela de detalhes)
+    quartoButton.addActionListener(e -> {
+        JanelaQuarto janela = new JanelaQuarto(null, quarto); // Passa o objeto Quarto
+        janela.setVisible(true); // Exibe a janela
+
+        // Atualiza o botão após fechar a janela
+        if (quarto.estaOcupado()) {
+            quartoButton.setBackground(Color.RED);
+            quartoButton.setIcon(iconePortaVermelha);
+        } else {
+            quartoButton.setBackground(Color.GREEN);
+            quartoButton.setIcon(iconePortaVerde);
+        }
+    });
+
+    // Adiciona o botão ao quartosPainel
+    quartosPainel.add(quartoButton);
+    quartosPainel.revalidate(); // Atualiza o layout do painel
+    quartosPainel.repaint(); // Redesenha o painel
+
+    // Limpa o campo de entrada
+    jTextField1.setText("");
+}
 
     public static void main(String[] args) {
         // Inicializa a tela principal

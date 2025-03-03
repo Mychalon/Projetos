@@ -5,68 +5,37 @@
  */
 package telas;
 
-import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import model.WrapLayout;
+import model.Produto;
+import java.util.ArrayList;
 
 /**
  *
  * @author Mycha
  */
-public class Tela_principal extends javax.swing.JFrame {
-private JPanel painelQuartos; // Painel onde os botões de quartos serão adicionados
-    private JTextField jTextField1;  // Campo para nome do quarto
-    private JTextField VALOR;  // Campo para valor do quarto
-
-    /**
+    public class Tela_principal extends javax.swing.JFrame {
+          
+        private ArrayList<Produto> listaProdutos = new ArrayList<>();
+        
+        /**
      * Creates new form Tela_principal
      */
     public Tela_principal() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
-       
-        // Configuração do JFrame
-        setTitle("Tela Principal");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-
-        // Inicializa o painel de quartos
-        painelQuartos = new JPanel();
-        painelQuartos.setLayout(new FlowLayout());  // Usando FlowLayout para os botões
-
-        // Adiciona o painel dentro de um JScrollPane para permitir rolagem
-        JScrollPane scrollPane = new JScrollPane(painelQuartos);
-        getContentPane().add(scrollPane, BorderLayout.CENTER);
-
-        // Campos para nome e valor do quarto
-        jTextField1 = new JTextField(15);
-        VALOR = new JTextField(15);
-
-        // Botão para adicionar quarto
-        JButton jButton2 = new JButton("Adicionar Quarto");
-        jButton2.addActionListener(evt -> jButton2ActionPerformed(evt));
-
-        // Layout para os campos de entrada e botão
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("Nome do Quarto:"));
-        panel.add(jTextField1);
-        panel.add(new JLabel("Valor do Quarto:"));
-        panel.add(VALOR);
-        panel.add(jButton2);
-
-        // Adiciona o painel de entrada e botão à tela
-        getContentPane().add(panel, BorderLayout.NORTH);
-
+        
+        // Define o layout do quartosPainel
+    quartosPainel.setLayout(new WrapLayout(FlowLayout.LEFT, 10, 10));
         
     }
-
+    public void incluirTela(Component tela){
+            teladefundo.add(tela);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -84,8 +53,7 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         teladefundo = new javax.swing.JDesktopPane();
-        quartosPanel = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
+        quartosPainel = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         cadastro = new javax.swing.JMenu();
         Hospedes = new javax.swing.JMenu();
@@ -198,28 +166,21 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
         );
         teladefundoLayout.setVerticalGroup(
             teladefundoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 513, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        quartosPanel.setBackground(new java.awt.Color(153, 153, 255));
+        quartosPainel.setBackground(new java.awt.Color(153, 153, 255));
+        quartosPainel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Quartos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 18))); // NOI18N
 
-        jLabel6.setText("Quartos");
-
-        javax.swing.GroupLayout quartosPanelLayout = new javax.swing.GroupLayout(quartosPanel);
-        quartosPanel.setLayout(quartosPanelLayout);
-        quartosPanelLayout.setHorizontalGroup(
-            quartosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, quartosPanelLayout.createSequentialGroup()
-                .addContainerGap(147, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addContainerGap(145, Short.MAX_VALUE))
+        javax.swing.GroupLayout quartosPainelLayout = new javax.swing.GroupLayout(quartosPainel);
+        quartosPainel.setLayout(quartosPainelLayout);
+        quartosPainelLayout.setHorizontalGroup(
+            quartosPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 324, Short.MAX_VALUE)
         );
-        quartosPanelLayout.setVerticalGroup(
-            quartosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(quartosPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel6)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        quartosPainelLayout.setVerticalGroup(
+            quartosPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 481, Short.MAX_VALUE)
         );
 
         cadastro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Cadastro menor.png"))); // NOI18N
@@ -500,14 +461,14 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
             .addGroup(layout.createSequentialGroup()
                 .addComponent(teladefundo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(quartosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(quartosPainel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(teladefundo)
-                    .addComponent(quartosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(quartosPainel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -555,18 +516,18 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
 
     private void VendasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VendasMouseClicked
         // TODO add your handling code here:
-        Vendaprodutos vendas = new Vendaprodutos();
-      teladefundo.add(vendas);
-      vendas.setVisible(true);
+        Vendaprodutos vendas = new Vendaprodutos(listaProdutos);
+        teladefundo.add(vendas);
+        vendas.setVisible(true);
       
     }//GEN-LAST:event_VendasMouseClicked
 
     private void casdastrarquartosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_casdastrarquartosActionPerformed
-        // TODO add your handling code here:
-        
-        cadquarto quartos = new cadquarto();
-        teladefundo.add(quartos);
-        quartos.setVisible(true);
+  
+      // TODO add your handling code here:
+    cadquarto quartos = new cadquarto(quartosPainel); // Passa o quartosPainel como argumento
+    teladefundo.add(quartos); // Adiciona a tela de cadastro de quartos ao painel principal
+    quartos.setVisible(true); // Torna a tela visível
         
         
     }//GEN-LAST:event_casdastrarquartosActionPerformed
@@ -582,11 +543,9 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
     }//GEN-LAST:event_CadastrarfuncionarioActionPerformed
 
     private void CadastrarprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadastrarprodutosActionPerformed
-        cadprodutos produtos = new cadprodutos();
-        teladefundo.add(produtos);
-        produtos.setVisible(true);
-
-
+        cadprodutos cadastro = new cadprodutos(listaProdutos);
+        teladefundo.add(cadastro);
+        cadastro.setVisible(true);
 
     }//GEN-LAST:event_CadastrarprodutosActionPerformed
 
@@ -634,9 +593,9 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
     private void ConsultarprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarprodutosActionPerformed
         // TODO add your handling code here:
 
-        consprodutos consultarp = new consprodutos();
-        teladefundo.add(consultarp);
-        consultarp.setVisible(true);
+        consprodutos consulta = new consprodutos(listaProdutos);
+        teladefundo.add(consulta);
+        consulta.setVisible(true);
 
     }//GEN-LAST:event_ConsultarprodutosActionPerformed
 
@@ -692,7 +651,6 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JMenu jMenu16;
     private javax.swing.JMenu jMenu17;
     private javax.swing.JMenu jMenu18;
@@ -710,7 +668,7 @@ private JPanel painelQuartos; // Painel onde os botões de quartos serão adicio
     private javax.swing.JMenuItem jMenuItem34;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JPanel quartosPanel;
+    private javax.swing.JPanel quartosPainel;
     private javax.swing.JMenuItem sobresistema;
     private javax.swing.JDesktopPane teladefundo;
     // End of variables declaration//GEN-END:variables

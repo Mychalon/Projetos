@@ -3,23 +3,36 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
 package telas;
-
-/**
- *
- * @author HOTEL FENIX
- * 
- */
+import model.Produto;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 public class consprodutos extends javax.swing.JInternalFrame {
-
-    /**
-     * Creates new form consprodutos
-     */
+ 
+    private ArrayList<Produto> listaProdutos; // Lista de produtos cadastrados
    
-    public consprodutos() {
+    public consprodutos(ArrayList<Produto> listaProdutos) {
         initComponents();   
+        this.listaProdutos = listaProdutos;
+        carregarProdutosNaTabela(); // Carrega os produtos na tabela ao abrir a tela
     }
+private void carregarProdutosNaTabela() {
+        // Cria um modelo de tabela
+        DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+        modelo.setRowCount(0); // Limpa a tabela
 
+        // Adiciona os produtos na tabela
+        for (Produto produto : listaProdutos) {
+            Object[] linha = {
+                produto.getCodigo(),
+                produto.getNome(),
+                produto.getQuantidade(),
+                produto.getPreco()
+            };
+            modelo.addRow(linha);
+        }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -95,10 +108,25 @@ public class consprodutos extends javax.swing.JInternalFrame {
         jLabel1.setText("Nome do Produto");
 
         jButton1.setText("Procurar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Limpar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Editar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -145,6 +173,45 @@ public class consprodutos extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+// Procurar produto pelo nome
+        String nomeProduto = jTextField1.getText().toLowerCase();
+        DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+        modelo.setRowCount(0); // Limpa a tabela
+
+        for (Produto produto : listaProdutos) {
+            if (produto.getNome().toLowerCase().contains(nomeProduto)) {
+                Object[] linha = {
+                    produto.getCodigo(),
+                    produto.getNome(),
+                    produto.getQuantidade(),
+                    produto.getPreco()
+                };
+                modelo.addRow(linha);
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+// Editar produto selecionado
+        int linhaSelecionada = jTable1.getSelectedRow();
+        if (linhaSelecionada >= 0) {
+            String codigo = (String) jTable1.getValueAt(linhaSelecionada, 0);
+            // Aqui você pode abrir uma tela de edição para o produto com o código selecionado
+            JOptionPane.showMessageDialog(this, "Editar produto: " + codigo);
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um produto para editar!");
+        }
+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+// Limpar a pesquisa e recarregar todos os produtos
+        jTextField1.setText("");
+        carregarProdutosNaTabela();
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -157,4 +224,5 @@ public class consprodutos extends javax.swing.JInternalFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
+
 }

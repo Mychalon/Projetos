@@ -10,44 +10,42 @@ package model;
  */
     // Classe Produto
     public class Produto {
-        
-        
-        
-        
-        private String Nome;
-        private String Cod;
-        private String Quant;
-        private String Preço;
+    private int id;
+    private String nome;
+    private String codigo;
+    private int quantidade;
+    private double preco;
 
-    public Produto(String Nome, String Cod, String Quant, String Preço) {
-        this.Nome = Nome;
-        this.Cod = Cod;
-        this.Quant = Quant;
-        this.Preço = Preço;
+    public Produto(int id, String nome, String codigo, int quantidade, double preco) {
+        this.id = id;
+        this.nome = nome;
+        this.codigo = codigo;
+        this.quantidade = quantidade;
+        this.preco = preco;
+    }
+
+    // Getters e Setters
+    public int getId() {
+        return id;
     }
 
     public String getNome() {
-        return Nome;
+        return nome;
     }
 
-    public void setNome(String Nome) {
-        this.Nome = Nome;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public String getQuant() {
-        return Quant;
+    public int getQuantidade() {
+        return quantidade;
     }
 
-    public void setQuant(String Quant) {
-        this.Quant = Quant;
+    public double getPreco() {
+        return preco;
     }
 
-    public String getPreço() {
-        return Preço;
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
-
-    public void setPreço(String Preço) {
-        this.Preço = Preço;
-    }
-          
-    }
+}

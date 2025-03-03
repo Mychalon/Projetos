@@ -4,8 +4,9 @@
  */
 package telas;
 
-import Atxy2k.CustomTextField.RestrictedTextField;
+
 import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -18,13 +19,9 @@ public class cadfuncionarios extends javax.swing.JInternalFrame {
      */
     public cadfuncionarios() {
         initComponents();
-        RestrictedTextField validar = new RestrictedTextField(txtCep);
-        validar.setOnlyNums(true);
-        validar.setLimit(8);
        
-        
-        
-    }
+    
+}
 
     /**
      * This method is called from within the constructor to initialize the form.

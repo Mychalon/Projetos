@@ -4,25 +4,22 @@
  */
 package telas;
 
+import model.Produto;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
 /**
  *
  * @author HOTEL FENIX
  */
 public class cadprodutos extends javax.swing.JInternalFrame {
-
+    private ArrayList<Produto> listaProdutos; // Lista para armazenar os produtos
     /**
      * Creates new form cadprodutos
      */
-     Tela_principal tela_principal;
-    public cadprodutos(Tela_principal tela_principal) {
+       public cadprodutos(ArrayList<Produto> listaProdutos) {
         initComponents();
-        this.tela_principal = tela_principal;
+        this.listaProdutos = listaProdutos;
     }
-
-    cadprodutos() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -133,10 +130,24 @@ public class cadprodutos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTextFieldCodigoActionPerformed
 
     private void cadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastrarActionPerformed
-       // Obter os dados inseridos
+
+        // Obter os dados inseridos
+        String nome = jTextFieldNome.getText();
+        String codigo = jTextFieldCodigo.getText();
+        int quantidade = Integer.parseInt(jTextFieldQuantidade.getText());
+        double preco = Double.parseDouble(jTextFieldPreco.getText());
+
+        // Criar um novo produto
+        Produto produto = new Produto(listaProdutos.size() + 1, nome, codigo, quantidade, preco);
+
+        // Adicionar à lista de produtos
+        listaProdutos.add(produto);
+
+        // Exibir mensagem de sucesso
+        JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
+
+        // Fechar a janela
         this.dispose();
-        consprodutos c = new consprodutos();
-        c.setVisible(true);
     
     }//GEN-LAST:event_cadastrarActionPerformed
 
