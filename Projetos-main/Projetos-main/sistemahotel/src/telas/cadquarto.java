@@ -271,7 +271,7 @@ private javax.swing.JPanel quartosPainel; // Variável para armazenar a referên
     }
 
     // Adiciona ação ao botão (abrir a janela de detalhes)
-    quartoButton.addActionListener(e -> {
+        quartoButton.addActionListener(e -> {
         JanelaQuarto janela = new JanelaQuarto(null, quarto); // Passa o objeto Quarto
         janela.setVisible(true); // Exibe a janela
 

@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import model.WrapLayout;
 import model.Produto;
 import java.util.ArrayList;
+import javax.swing.JDesktopPane;
 
 /**
  *
@@ -592,7 +593,7 @@ import java.util.ArrayList;
 
     private void ConsultarprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarprodutosActionPerformed
         // TODO add your handling code here:
-
+      
         consprodutos consulta = new consprodutos(listaProdutos);
         teladefundo.add(consulta);
         consulta.setVisible(true);
@@ -675,5 +676,9 @@ import java.util.ArrayList;
 
     private void jButton2ActionPerformed(ActionEvent evt) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private JDesktopPane getDesktopPane() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

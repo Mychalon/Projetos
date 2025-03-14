@@ -7,6 +7,7 @@ package telas;
 
 import model.Produto;
 import java.util.ArrayList;
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 /**
  *
@@ -15,14 +16,25 @@ import javax.swing.JOptionPane;
 public class Vendaprodutos extends javax.swing.JInternalFrame {
 
     public Vendaprodutos(ArrayList<Produto> listaProdutos) {
-         super(); // Chama o construtor da superclasse (javax.swing.JInternalFrame)
-        this.listaProdutos = listaProdutos; // Inicializa a lista de produtos
-       
-        
+    super(); // Chama o construtor da superclasse
+    initComponents(); // Inicializa os componentes da interface gráfica
+    this.listaProdutos = listaProdutos; // Inicializa a lista de produtos
+
+    // Configura o botão "Consultar"
+    consultarProduto.addActionListener(e -> {
+        try {
+            consprodutos consulta = new consprodutos(listaProdutos); // Cria a tela de consulta
+            JDesktopPane desktopPane = getDesktopPane(); // Obtém o JDesktopPane atual
+            desktopPane.add(consulta); // Adiciona a tela ao JDesktopPane
+            consulta.setVisible(true); // Torna a tela visível
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao abrir a tela de consulta: " + ex.getMessage());
+        }
+    });
     // Adicionar ActionListeners aos campos
     txtCodigo.addActionListener(e -> consultarProdutoPorCodigo());
     txtQuantidade.addActionListener(e -> adicionarProdutoAVenda());
-    }
+}
     
        private ArrayList<String> descricaoItens = new ArrayList<>(); // Lista de descrições dos itens
        
@@ -38,20 +50,22 @@ private void atualizarDescricao() {
     descricaoItensTextField.setText(descricao.toString());
 }
 private void adicionarProdutoAVenda() {
-    try {
+     try {
         String codigo = txtCodigo.getText();
         int quantidade = Integer.parseInt(txtQuantidade.getText());
-        double precoUnitario = Double.parseDouble(precoUnidade.getText());
+        String precoUnitarioStr = precoUnidade.getText().replace(",", "."); // Substitui vírgula por ponto
+        double precoUnitario = Double.parseDouble(precoUnitarioStr); // Converte para double
 
         Produto produto = buscarProdutoPorCodigo(codigo);
         if (produto != null) {
             // Calcula o valor total do item
-            double valorTotalItem = quantidade * precoUnitario;
+            double valorTotalItem = quantidade * precoUnitario; // Já é double
 
-            // Adiciona o item à lista de descrições
+            // Adiciona o item à descrição
             String descricaoItem = produto.getNome() + " - Quantidade: " + quantidade + " - Valor: R$ " + String.format("%.2f", valorTotalItem);
             descricaoItens.add(descricaoItem);
-
+            
+            
             // Atualiza a descrição na interface
             atualizarDescricao();
 
@@ -183,6 +197,18 @@ private void adicionarProdutoAVenda() {
 
         jLabel4.setText("Valor Total");
 
+        valorUnitario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                valorUnitarioActionPerformed(evt);
+            }
+        });
+
+        txtQuantidade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtQuantidadeActionPerformed(evt);
+            }
+        });
+
         precoUnidade.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 precoUnidadeActionPerformed(evt);
@@ -245,6 +271,12 @@ private void adicionarProdutoAVenda() {
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Descrição"));
+
+        descricaoItensTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                descricaoItensTextFieldActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -331,7 +363,7 @@ private void adicionarProdutoAVenda() {
 
     private void cancelarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarProdutoActionPerformed
         if (!descricaoItens.isEmpty()) {
-        // Remove o último item da lista de descrições
+        // Remove o último item da descrição
         descricaoItens.remove(descricaoItens.size() - 1);
 
         // Atualiza a descrição na interface
@@ -344,7 +376,8 @@ private void adicionarProdutoAVenda() {
         valorTotalVenda = 0;
         for (String item : descricaoItens) {
             String[] partes = item.split(" - Valor: R\\$ ");
-            valorTotalVenda += Double.parseDouble(partes[1]);
+            String valorStr = partes[1].replace(",", "."); // Substitui vírgula por ponto
+            valorTotalVenda += Double.parseDouble(valorStr); // Converte para double
         }
         valorTotal.setText(String.format("R$ %.2f", valorTotalVenda));
     } else {
@@ -358,12 +391,13 @@ private void adicionarProdutoAVenda() {
     }//GEN-LAST:event_VoltarActionPerformed
 
     private void consultarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarProdutoActionPerformed
-    consprodutos consulta = new consprodutos(listaProdutos);
-    consulta.setVisible(true);
+    consprodutos consulta = new consprodutos(listaProdutos); // Cria a tela de consulta
+    consulta.setVisible(true); // Torna a tela visível
     }//GEN-LAST:event_consultarProdutoActionPerformed
 
     private void vendaFeitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vendaFeitaActionPerformed
-   // Finalizar a venda
+
+    // Finalizar a venda
     if (descricaoItens.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Nenhum produto selecionado para venda!");
     } else {
@@ -372,7 +406,7 @@ private void adicionarProdutoAVenda() {
         for (String item : descricaoItens) {
             resumo.append(item).append("\n");
         }
-        resumo.append("Valor Total da Venda: R$ ").append(String.format("%.2f", valorTotalVenda));
+        resumo.append("Valor Total da Venda: R$ ").append(String.format("%.2f", (double) valorTotalVenda));
 
         // Exibir o resumo em uma mensagem
         JOptionPane.showMessageDialog(this, resumo.toString());
@@ -387,13 +421,25 @@ private void adicionarProdutoAVenda() {
         valorTotal.setText("R$ 0.00");
         descricaoItensTextField.setText(""); // Limpa o campo de descrição
     }
-    }
+}
 private void imprimirResumoVenda(String resumo) {
     // Simulação de impressão (pode ser substituída por uma impressão real)
     System.out.println("=== Impressão do Resumo da Venda ===");
     System.out.println(resumo);
     System.out.println("===================================");
     }//GEN-LAST:event_vendaFeitaActionPerformed
+
+    private void valorUnitarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_valorUnitarioActionPerformed
+      
+    }//GEN-LAST:event_valorUnitarioActionPerformed
+
+    private void descricaoItensTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descricaoItensTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_descricaoItensTextFieldActionPerformed
+
+    private void txtQuantidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantidadeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtQuantidadeActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -421,16 +467,40 @@ private void imprimirResumoVenda(String resumo) {
     private javax.swing.JButton vendaFeita;
     // End of variables declaration//GEN-END:variables
 
-    private void calcularValorTotalProduto() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
+    private double calcularValorTotalProduto(int quantidade, double precoUnitario) {
+    return quantidade * precoUnitario; // Retorna o valor total do produto
+ }
 
     private Produto buscarProdutoPorCodigo(String codigo) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+     for (Produto produto : listaProdutos) {
+        if (produto.getCodigo().equals(codigo)) {
+            return produto;
+        }
+    }
+    return null; // Retorna null se o produto não for encontrado    
+    
     }
 
     private void consultarProdutoPorCodigo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    String codigo = txtCodigo.getText().trim(); // Obtém o código digitado
+
+    if (!codigo.isEmpty()) {
+        Produto produto = buscarProdutoPorCodigo(codigo); // Busca o produto na lista
+
+        if (produto != null) {
+            // Preenche os campos com as informações do produto
+            txtnomeProduto.setText(produto.getNome());
+            precoUnidade.setText(String.valueOf(produto.getPreco()));
+            txtQuantidade.requestFocus(); // Move o foco para o campo de quantidade
+        } else {
+            JOptionPane.showMessageDialog(this, "Produto não encontrado!");
+            txtCodigo.setText(""); // Limpa o campo de código
+            txtCodigo.requestFocus(); // Volta o foco para o campo de código
+        }
+    }    
     }
+
+   
 
 }

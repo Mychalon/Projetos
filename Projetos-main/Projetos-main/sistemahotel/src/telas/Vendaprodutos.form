@@ -263,10 +263,16 @@
         <Component class="javax.swing.JTextField" name="txtnomeProduto">
         </Component>
         <Component class="javax.swing.JTextField" name="valorUnitario">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="valorUnitarioActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="txtCodigo">
         </Component>
         <Component class="javax.swing.JTextField" name="txtQuantidade">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtQuantidadeActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="precoUnidade">
           <Events>
@@ -311,6 +317,9 @@
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JTextField" name="descricaoItensTextField">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="descricaoItensTextFieldActionPerformed"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="Vendaprodutos_jTextField7"/>
           </AuxValues>

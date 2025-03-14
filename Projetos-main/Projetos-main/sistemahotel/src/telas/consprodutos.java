@@ -10,12 +10,12 @@ import javax.swing.table.DefaultTableModel;
 
 public class consprodutos extends javax.swing.JInternalFrame {
  
-    private ArrayList<Produto> listaProdutos; // Lista de produtos cadastrados
-   
+    private ArrayList<Produto> listaProdutos;
+
     public consprodutos(ArrayList<Produto> listaProdutos) {
-        initComponents();   
+        initComponents(); // Inicializa os componentes da interface gráfica
         this.listaProdutos = listaProdutos;
-        carregarProdutosNaTabela(); // Carrega os produtos na tabela ao abrir a tela
+        // Aqui você pode carregar os produtos na interface, se necessário
     }
 private void carregarProdutosNaTabela() {
         // Cria um modelo de tabela
