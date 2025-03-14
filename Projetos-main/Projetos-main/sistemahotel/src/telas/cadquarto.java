@@ -7,7 +7,9 @@ package telas;
 import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import model.Quarto;
 
@@ -17,12 +19,18 @@ import model.Quarto;
  */
 public class cadquarto extends javax.swing.JInternalFrame {
 private javax.swing.JPanel quartosPainel; // Variável para armazenar a referência do quartosPainel
+private javax.swing.JRadioButton solteiro;
+private javax.swing.JRadioButton duplo;
+private javax.swing.JRadioButton triplo;
+private javax.swing.JRadioButton quadruplo;
+private javax.swing.JTextField nomeQuarto;
     /**
      * Creates new form cadquarto
      */
     public cadquarto(javax.swing.JPanel quartosPainel) {
     this.quartosPainel = quartosPainel; // Armazena a referência do quartosPainel
     initComponents(); // Inicializa os componentes da interface
+    
 }
 
     
@@ -242,14 +250,18 @@ private javax.swing.JPanel quartosPainel; // Variável para armazenar a referên
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-         // Obtém o nome do quarto
-    String nomeQuarto = jTextField1.getText();
-
+      // Obtém o nome do quarto do campo de texto
+    String nomeQuarto = jTextField1.getText(); // Usa o campo de texto da classe
+    System.out.println("Texto do campo: " + nomeQuarto);
+    
     // Verifica se o campo não está vazio
     if (nomeQuarto.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Preencha o nome do quarto!", "Erro", JOptionPane.ERROR_MESSAGE);
         return;
     }
+
+    // Determina o número de acompanhantes com base no tipo de quarto selecionado
+   
 
     // Cria um objeto Quarto
     Quarto quarto = new Quarto(nomeQuarto);
@@ -270,10 +282,15 @@ private javax.swing.JPanel quartosPainel; // Variável para armazenar a referên
         quartoButton.setIcon(iconePortaVerde);
     }
 
+    // Cria cópias das variáveis para uso na lambda
+    final String nomeQuartoFinal = nomeQuarto; // Cópia final
+    
     // Adiciona ação ao botão (abrir a janela de detalhes)
-        quartoButton.addActionListener(e -> {
-        JanelaQuarto janela = new JanelaQuarto(null, quarto); // Passa o objeto Quarto
-        janela.setVisible(true); // Exibe a janela
+    quartoButton.addActionListener(e -> {
+        janelaQuar janela = new janelaQuar (nomeQuarto); // Usa as cópias finais
+        JDesktopPane desktopPane = getDesktopPane(); // Obtém o JDesktopPane atual
+        desktopPane.add(janela); // Adiciona a janela ao JDesktopPane
+        janela.setVisible(true); // Torna a janela visível
 
         // Atualiza o botão após fechar a janela
         if (quarto.estaOcupado()) {
@@ -291,7 +308,7 @@ private javax.swing.JPanel quartosPainel; // Variável para armazenar a referên
     quartosPainel.repaint(); // Redesenha o painel
 
     // Limpa o campo de entrada
-    jTextField1.setText("");
+    jTextField1.setText(""); // Limpa o campo de texto
 }
 
     public static void main(String[] args) {

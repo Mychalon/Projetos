@@ -24,6 +24,14 @@ public class janelaQuar extends javax.swing.JInternalFrame {
  
     }
 
+    
+
+    
+
+    
+
+    
+
    
     
     
