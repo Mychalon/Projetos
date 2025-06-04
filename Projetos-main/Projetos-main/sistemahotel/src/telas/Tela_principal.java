@@ -5,38 +5,143 @@
  */
 package telas;
 
+
+import dao.QuartoDAO;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import model.WrapLayout;
-import model.Produto;
 import java.util.ArrayList;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import model.Produto;
+import javax.swing.JTextField;
+import model.WrapLayout;
 
-/**
- *
- * @author Mycha
- */
-    public class Tela_principal extends javax.swing.JFrame {
+
+
+public class Tela_principal extends javax.swing.JFrame {
           
-        private ArrayList<Produto> listaProdutos = new ArrayList<>();
+        private final ArrayList<Produto> listaProdutos = new ArrayList<>();
+        private JTextField jTextField1;  // Campo para nome do quarto
+        private JTextField VALOR;  // Campo para valor do quarto
         
-        /**
-     * Creates new form Tela_principal
-     */
-    public Tela_principal() {
+
+
+    
+
+
+       
+    public Tela_principal(String nomeUsuario, String tipoUsuario) {
         initComponents();
-        setExtendedState(MAXIMIZED_BOTH);
-        
-        // Define o layout do quartosPainel
-    quartosPainel.setLayout(new WrapLayout(FlowLayout.LEFT, 10, 10));
-        
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        jLabel3.setText(nomeUsuario);
+        jLabel5.setText(tipoUsuario);
+        painelDosBotoes.setLayout(new WrapLayout(java.awt.FlowLayout.LEFT, 10, 10));
+  
+        // Carrega os quartos do banco ao iniciar
+        carregarQuartosDoBanco();
+    
     }
-    public void incluirTela(Component tela){
-            teladefundo.add(tela);
+   
+   
+   private void carregarQuartosDoBanco() {
+   try {
+        painelDosBotoes.removeAll(); // Limpa os botões existentes
+        List<Quarto> quartos = QuartoDAO.listarQuartos();
+        
+        for (Quarto quarto : quartos) {
+            JButton btnQuarto = new JButton(quarto.getNumero());
+            btnQuarto.putClientProperty("idQuarto", quarto.getIdQuarto());
+            
+            if ("ocupado".equalsIgnoreCase(quarto.getStatus())) {
+                btnQuarto.setBackground(Color.RED);
+                btnQuarto.setIcon(new ImageIcon(getClass().getResource("/imagens/porta_vermelha.png")));
+            } else {
+                btnQuarto.setBackground(Color.GREEN);
+                btnQuarto.setIcon(new ImageIcon(getClass().getResource("/imagens/porta_verde.png")));
+            }
+            
+            // TRATAMENTO ADICIONADO AQUI:
+            btnQuarto.addActionListener(e -> {
+                int idQuarto = (int) btnQuarto.getClientProperty("idQuarto");
+                
+                try {
+                    Quarto quartoSelecionado = QuartoDAO.buscarPorId(idQuarto);
+                    abrirJanelaQuarto(quartoSelecionado);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(
+                        Tela_principal.this,
+                        "Erro ao acessar o banco de dados: " + ex.getMessage(),
+                        "Erro",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            });
+            
+            painelDosBotoes.add(btnQuarto);
+        }
+        
+        painelDosBotoes.revalidate();
+        painelDosBotoes.repaint();
+        
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(
+            this, 
+            "Erro ao carregar quartos: " + e.getMessage(), 
+            "Erro", 
+            JOptionPane.ERROR_MESSAGE
+        );
     }
+}
+
+private void abrirJanelaQuarto(Quarto quarto) {
+    JDialog dialog = new JDialog(this, "Gerenciar Quarto " + quarto.getNumero(), true);
+    JanelaQuarto form = new JanelaQuarto(quarto, dialog, this);
+    dialog.add(form);
+    dialog.pack();
+    dialog.setLocationRelativeTo(this);
+    dialog.setVisible(true);
+}
+ 
+
+    
+    private void JanelaQuarto(Quarto quarto) {
+    // Cria um JDialog para mostrar os detalhes
+    JDialog dialog = new JDialog(this, "Detalhes do Quarto " + quarto.getNumero(), true);
+    dialog.setSize(500, 400);
+    dialog.setLayout(new BorderLayout());
+    
+    // Painel de informações
+    JPanel panel = new JPanel(new GridLayout(0, 2, 10, 10));
+    panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    
+    // Adiciona informações do quarto
+    panel.add(new JLabel("Número:"));
+    panel.add(new JLabel(quarto.getNumero()));
+    
+    panel.add(new JLabel("Tipo:"));
+    panel.add(new JLabel(quarto.getTipo()));
+    
+    panel.add(new JLabel("Status:"));
+    JLabel lblStatus = new JLabel(quarto.getStatus());
+    lblStatus.setForeground("ocupado".equalsIgnoreCase(quarto.getStatus()) ? Color.RED : Color.GREEN);
+    panel.add(lblStatus);
+    
+
+}
+
+       
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -57,6 +162,8 @@ import javax.swing.JDesktopPane;
         jPanel2 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         quartosPainel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        painelDosBotoes = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         cadastro = new javax.swing.JMenu();
         Hospedes = new javax.swing.JMenu();
@@ -131,7 +238,7 @@ import javax.swing.JDesktopPane;
                 .addGap(39, 39, 39)
                 .addComponent(jSeparator1))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(217, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -142,7 +249,7 @@ import javax.swing.JDesktopPane;
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel3))))
-                .addContainerGap(217, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,16 +277,16 @@ import javax.swing.JDesktopPane;
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(98, Short.MAX_VALUE)
+                .addContainerGap(188, Short.MAX_VALUE)
                 .addComponent(jLabel6)
-                .addContainerGap(84, Short.MAX_VALUE))
+                .addContainerGap(290, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel6)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         teladefundo.setLayer(jPanel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -188,7 +295,9 @@ import javax.swing.JDesktopPane;
         teladefundo.setLayout(teladefundoLayout);
         teladefundoLayout.setHorizontalGroup(
             teladefundoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(teladefundoLayout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         teladefundoLayout.setVerticalGroup(
             teladefundoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -198,15 +307,32 @@ import javax.swing.JDesktopPane;
         quartosPainel.setBackground(new java.awt.Color(153, 153, 255));
         quartosPainel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Quartos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 18))); // NOI18N
 
+        jScrollPane1.setBackground(new java.awt.Color(153, 153, 255));
+
+        javax.swing.GroupLayout painelDosBotoesLayout = new javax.swing.GroupLayout(painelDosBotoes);
+        painelDosBotoes.setLayout(painelDosBotoesLayout);
+        painelDosBotoesLayout.setHorizontalGroup(
+            painelDosBotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 440, Short.MAX_VALUE)
+        );
+        painelDosBotoesLayout.setVerticalGroup(
+            painelDosBotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 511, Short.MAX_VALUE)
+        );
+
+        jScrollPane1.setViewportView(painelDosBotoes);
+
         javax.swing.GroupLayout quartosPainelLayout = new javax.swing.GroupLayout(quartosPainel);
         quartosPainel.setLayout(quartosPainelLayout);
         quartosPainelLayout.setHorizontalGroup(
             quartosPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 347, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
         );
         quartosPainelLayout.setVerticalGroup(
             quartosPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(quartosPainelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1))
         );
 
         cadastro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Cadastro menor.png"))); // NOI18N
@@ -487,7 +613,8 @@ import javax.swing.JDesktopPane;
             .addGroup(layout.createSequentialGroup()
                 .addComponent(teladefundo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(quartosPainel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(quartosPainel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -550,11 +677,17 @@ import javax.swing.JDesktopPane;
 
     private void casdastrarquartosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_casdastrarquartosActionPerformed
   
-      // TODO add your handling code here:
-    cadquarto quartos = new cadquarto(quartosPainel); // Passa o quartosPainel como argumento
-    teladefundo.add(quartos); // Adiciona a tela de cadastro de quartos ao painel principal
-    quartos.setVisible(true); // Torna a tela visível
-        
+    cadquarto quartos = new cadquarto();
+    quartos.setPainelBotoes(painelDosBotoes);
+    quartos.setVisible(true);
+    teladefundo.add(quartos);
+    try {
+        quartos.setSelected(true);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    
         
     }//GEN-LAST:event_casdastrarquartosActionPerformed
 
@@ -634,7 +767,8 @@ import javax.swing.JDesktopPane;
 
 
     }//GEN-LAST:event_ConsultarServiçosActionPerformed
-
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Cadastrarfuncionario;
     private javax.swing.JMenuItem Cadastrarhospede;
@@ -695,7 +829,9 @@ import javax.swing.JDesktopPane;
     private javax.swing.JMenuItem jMenuItem34;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPanel painelDosBotoes;
     private javax.swing.JPanel quartosPainel;
     private javax.swing.JMenuItem sobresistema;
     private javax.swing.JDesktopPane teladefundo;
@@ -708,4 +844,42 @@ import javax.swing.JDesktopPane;
     private JDesktopPane getDesktopPane() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+   public void atualizarBotaoQuarto(Quarto quarto) {
+    
+    System.out.println("DEBUG - Atualizando quarto " + quarto.getNumero() + 
+                      " - Status: " + quarto.getStatus()); // Mensagem de depuração
+    
+    for (Component comp : painelDosBotoes.getComponents()) {
+        if (comp instanceof JButton) {
+            JButton btn = (JButton) comp;
+            if (btn.getText().equals(quarto.getNumero())) {
+                if ("hospedado".equalsIgnoreCase(quarto.getStatus())) {
+                    btn.setBackground(Color.RED);
+                    btn.setIcon(new ImageIcon(getClass().getResource("/imagens/porta_vermelha.png")));
+                    btn.setToolTipText("Ocupado por: " + quarto.getNomeHospede() + 
+                                     "\nCPF: " + quarto.getCpfHospede() +
+                                     "\nTelefone: " + quarto.getTelefone());
+                } else {
+                    btn.setBackground(Color.GREEN);
+                    btn.setIcon(new ImageIcon(getClass().getResource("/imagens/porta_verde.png")));
+                    btn.setToolTipText("Disponível");
+                }
+                break;
+            }
+        }
+    }
+    painelDosBotoes.revalidate();
+    painelDosBotoes.repaint();
+
+    // Atualiza o banco de dados
+    try {
+        QuartoDAO.atualizarStatusQuarto(quarto);
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, 
+            "Erro ao atualizar status do quarto: " + ex.getMessage(),
+            "Erro", JOptionPane.ERROR_MESSAGE);
+    }
 }
+    
+    }

@@ -5,6 +5,7 @@
  */
 package telas;
 
+import dao.PessoaDAO;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -139,17 +140,50 @@ public class TelaLogin extends javax.swing.JFrame {
 
     private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
         // TODO add your handling code here:
+         jButton2ActionPerformed(evt); // Simular clique no botão Entrar
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
+          jPasswordField1.requestFocus(); // Mover o foco para o campo de senha
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+       // Obter os valores dos campos
+    String login = jTextField1.getText().trim();
+    String senha = new String(jPasswordField1.getPassword()).trim();
+    
+    // Verificar se os campos estão preenchidos
+    if (login.isEmpty() || senha.isEmpty()) {
+        JOptionPane.showMessageDialog(this, 
+            "Por favor, preencha todos os campos!", 
+            "Erro de Login", 
+            JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    // Verificar as credenciais no banco de dados
+    boolean credenciaisValidas = PessoaDAO.verificarLogin(login, senha);
+    
+    if (credenciaisValidas) {
+        // Se as credenciais estiverem corretas, obter tipo de usuário e abrir a tela principal
+        String tipoUsuario = PessoaDAO.obterTipoUsuario(login, senha);
         setVisible(false);
-        Tela_principal tela = new Tela_principal();
+        Tela_principal tela = new Tela_principal(login, tipoUsuario);
         tela.setVisible(true);
+    } else {
+        // Se as credenciais estiverem incorretas, mostrar mensagem de erro
+        JOptionPane.showMessageDialog(this, 
+            "Login ou senha incorretos!", 
+            "Erro de Login", 
+            JOptionPane.ERROR_MESSAGE);
+        
+        // Limpar o campo de senha
+        jPasswordField1.setText("");
+        
+        // Colocar o foco no campo de login
+        jTextField1.requestFocus();
+    }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -178,15 +212,11 @@ public class TelaLogin extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */

@@ -24,7 +24,7 @@ public class Vendaprodutos extends javax.swing.JInternalFrame {
     consultarProduto.addActionListener(e -> {
         try {
             consprodutos consulta = new consprodutos(listaProdutos); // Cria a tela de consulta
-            JDesktopPane desktopPane = getDesktopPane(); // Obtém o JDesktopPane atual
+            JDesktopPane desktopPane = (JDesktopPane) this.getParent().getParent(); // Obtém o JDesktopPane atual
             desktopPane.add(consulta); // Adiciona a tela ao JDesktopPane
             consulta.setVisible(true); // Torna a tela visível
         } catch (Exception ex) {

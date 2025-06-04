@@ -1,51 +1,39 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author HOTEL FENIX
- */
-    // Classe Produto
-    public class Produto {
+public class Produto {
     private int id;
     private String nome;
-    private String codigo;
-    private int quantidade;
     private double preco;
-
+    private String tipo;
+    private int estoque;
+    
+    // Construtor vazio
+    public Produto() {}
+    
+    // Construtor com parâmetros
     public Produto(int id, String nome, String codigo, int quantidade, double preco) {
         this.id = id;
         this.nome = nome;
-        this.codigo = codigo;
-        this.quantidade = quantidade;
         this.preco = preco;
     }
-
+    
     // Getters e Setters
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public double getPreco() { return preco; }
+    public void setPreco(double preco) { this.preco = preco; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+    public int getEstoque() { return estoque; }
+    public void setEstoque(int estoque) { this.estoque = estoque; }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public String getCodigo() {
-        return codigo;
+    public Object getCodigo() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public int getQuantidade() {
-        return quantidade;
-    }
-
-    public double getPreco() {
-        return preco;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

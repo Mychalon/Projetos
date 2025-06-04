@@ -1,50 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.util.Date;
 
-/**
- *
- * @author HOTEL FENIX
- */
-public class Funcionario extends Pessoa{
+public class Funcionario extends Pessoa {
     
-    protected String nome;
-    protected String senha;
 
- 
-    public Funcionario(String nome, String senha, int id) {
-        super(id, nome);
-        this.nome = nome;
-        this.senha = senha;
+    // Construtor básico
+    public Funcionario() {
+        super();
+        this.tipo = "funcionario"; // Define o tipo automaticamente
     }
 
-    public Funcionario( String senha, int id, String nome, char sexo, Date dataNascimento, String telefone, String email, String rg, String cnpj) {
-        super(id, nome, sexo, dataNascimento, telefone, email, rg, cnpj);
-        this.nome = nome;
-        this.senha = senha;
+    // Construtor completo
+    public Funcionario(int id, String nome, String sobrenome, String cpf,
+                      String telefone, String email, String senha, 
+                      String endereco, Date dataNascimento) {
+        super(id, nome, sobrenome, cpf, telefone, email, "funcionario", senha, endereco, dataNascimento);
     }
 
-    public String getNome() {
-        return nome;
+    // Métodos específicos (se necessário)
+    public boolean autenticar(String senha) {
+        return this.senha.equals(senha);
     }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    
-    
-    
 }

@@ -4,36 +4,61 @@
  */
 package telas;
 
+import dao.QuartoDAO;
 import java.awt.Color;
+import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import model.Quarto;
+import javax.swing.JPanel;
 
-/**
- *
- * @author HOTEL FENIX
- */
+
+
+ 
 public class cadquarto extends javax.swing.JInternalFrame {
-private javax.swing.JPanel quartosPainel; // Variável para armazenar a referência do quartosPainel
-private javax.swing.JRadioButton solteiro;
-private javax.swing.JRadioButton duplo;
-private javax.swing.JRadioButton triplo;
-private javax.swing.JRadioButton quadruplo;
-private javax.swing.JTextField nomeQuarto;
-    /**
-     * Creates new form cadquarto
-     */
-    public cadquarto(javax.swing.JPanel quartosPainel) {
-    this.quartosPainel = quartosPainel; // Armazena a referência do quartosPainel
+    
+
+    private javax.swing.JPanel painelDosBotoes; // ADICIONE ESTA LINHA
+    private javax.swing.JRadioButton solteiro;
+    private javax.swing.JRadioButton duplo;
+    private javax.swing.JRadioButton triplo;
+    private javax.swing.JRadioButton quadruplo;
+    private javax.swing.JTextField nomeQuarto;
+    
+    cadquarto() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+   
+    // Métodos para acessar os dados do formulário
+    public String getNomeQuarto() {
+        return jTextField1.getText();
+    }
+    
+    public String getTipoQuarto() {
+        if (jRadioButton1.isSelected()) return "Solteiro";
+        if (jRadioButton2.isSelected()) return "Duplo";
+        if (jRadioButton3.isSelected()) return "Triplo";
+        if (jRadioButton4.isSelected()) return "Quadruplo";
+        return "";
+    }
+    
+    
+    public String getDescricao() {
+        return jTextField3.getText();
+    }
+     public void setPainelBotoes(JPanel painel) {
+        this.painelDosBotoes = painel;
+     
     initComponents(); // Inicializa os componentes da interface
     
-}
+    // Inicializa os componentes (ajuste conforme seus nomes reais)
+        solteiro = jRadioButton1;
+        duplo = jRadioButton2;
+        triplo = jRadioButton3;
+        quadruplo = jRadioButton4;
+        nomeQuarto = jTextField1;
 
-    
+
+     }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -249,75 +274,66 @@ private javax.swing.JTextField nomeQuarto;
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-      // Obtém o nome do quarto do campo de texto
-    String nomeQuarto = jTextField1.getText(); // Usa o campo de texto da classe
-    System.out.println("Texto do campo: " + nomeQuarto);
+       
+       // Verifica se o painelDosBotoes foi inicializado
+    if (painelDosBotoes == null) {
+        JOptionPane.showMessageDialog(this, "Erro: Painel de botões não inicializado!", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
     
-    // Verifica se o campo não está vazio
+    String nomeQuarto = jTextField1.getText();
     if (nomeQuarto.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Preencha o nome do quarto!", "Erro", JOptionPane.ERROR_MESSAGE);
         return;
     }
-
-    // Determina o número de acompanhantes com base no tipo de quarto selecionado
-   
-
-    // Cria um objeto Quarto
-    Quarto quarto = new Quarto(nomeQuarto);
-
-    // Cria um botão representando o quarto
-    JButton quartoButton = new JButton(nomeQuarto);
-
-    // Carrega os ícones para os estados disponível e ocupado
-    ImageIcon iconePortaVerde = new ImageIcon(getClass().getResource("/imagens/porta_verde.png")); // Ícone da porta verde
-    ImageIcon iconePortaVermelha = new ImageIcon(getClass().getResource("/imagens/porta_vermelha.png")); // Ícone da porta vermelha
-
-    // Define o ícone e a cor inicial (verde se não houver hóspede, vermelho se houver)
-    if (quarto.estaOcupado()) {
-        quartoButton.setBackground(Color.RED);
-        quartoButton.setIcon(iconePortaVermelha);
-    } else {
-        quartoButton.setBackground(Color.GREEN);
-        quartoButton.setIcon(iconePortaVerde);
-    }
-
-    // Cria cópias das variáveis para uso na lambda
-    final String nomeQuartoFinal = nomeQuarto; // Cópia final
-    
-    // Adiciona ação ao botão (abrir a janela de detalhes)
-    quartoButton.addActionListener(e -> {
-        janelaQuar janela = new janelaQuar (nomeQuarto); // Usa as cópias finais
-        JDesktopPane desktopPane = getDesktopPane(); // Obtém o JDesktopPane atual
-        desktopPane.add(janela); // Adiciona a janela ao JDesktopPane
-        janela.setVisible(true); // Torna a janela visível
-
-        // Atualiza o botão após fechar a janela
-        if (quarto.estaOcupado()) {
-            quartoButton.setBackground(Color.RED);
-            quartoButton.setIcon(iconePortaVermelha);
-        } else {
-            quartoButton.setBackground(Color.GREEN);
-            quartoButton.setIcon(iconePortaVerde);
-        }
-    });
-
-    // Adiciona o botão ao quartosPainel
-    quartosPainel.add(quartoButton);
-    quartosPainel.revalidate(); // Atualiza o layout do painel
-    quartosPainel.repaint(); // Redesenha o painel
-
-    // Limpa o campo de entrada
-    jTextField1.setText(""); // Limpa o campo de texto
-}
-
-    public static void main(String[] args) {
-        // Inicializa a tela principal
-        SwingUtilities.invokeLater(() -> {
-            Tela_principal frame = new Tela_principal();
-            frame.setVisible(true);
-        });
         
+    
+     // Verifica se pelo menos um tipo de quarto foi selecionado
+        if (!jRadioButton1.isSelected() && !jRadioButton2.isSelected() && 
+            !jRadioButton3.isSelected() && !jRadioButton4.isSelected()) {
+            JOptionPane.showMessageDialog(this, "Selecione o tipo de quarto!", 
+                "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+     try {
+        // Primeiro salva no banco de dados
+        QuartoDAO.cadastrarQuarto(this);
+        
+    JButton quartoButton = new JButton(nomeQuarto);
+    quartoButton.setBackground(Color.GREEN);
+    
+    // Configuração dos ícones (ajuste os caminhos conforme necessário)
+    try {
+        ImageIcon iconePortaVerde = new ImageIcon(getClass().getResource("/imagens/porta_verde.png"));
+        ImageIcon iconePortaVermelha = new ImageIcon(getClass().getResource("/imagens/porta_vermelha.png"));
+        quartoButton.setIcon(iconePortaVerde);
+        
+        quartoButton.addActionListener(e -> {
+            if (quartoButton.getBackground().equals(Color.GREEN)) {
+                quartoButton.setBackground(Color.RED);
+                quartoButton.setIcon(iconePortaVermelha);
+            } else {
+                quartoButton.setBackground(Color.GREEN);
+                quartoButton.setIcon(iconePortaVerde);
+            }
+        });
+    } catch (Exception e) {
+           }
+    
+    // Adiciona o botão ao painel
+    painelDosBotoes.add(quartoButton);
+    painelDosBotoes.revalidate();
+    painelDosBotoes.repaint();
+    
+    jTextField1.setText("");
+    
+    JOptionPane.showMessageDialog(this, "Quarto cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+  
+     } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Erro ao cadastrar quarto no banco de dados: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+     
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
@@ -340,4 +356,23 @@ private javax.swing.JTextField nomeQuarto;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
+
+    private static class JanelaDetalhesQuarto {
+
+        public JanelaDetalhesQuarto() {
+        }
+
+        private JanelaDetalhesQuarto(Quarto quarto) {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
+
+        private void setVisible(boolean b) {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
+
+        private boolean isQuartoModificado() {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
+    }
+
 }

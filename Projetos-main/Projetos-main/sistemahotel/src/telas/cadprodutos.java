@@ -4,6 +4,7 @@
  */
 package telas;
 
+import dao.ProdutoDAO;
 import model.Produto;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -13,6 +14,7 @@ import javax.swing.JOptionPane;
  */
 public class cadprodutos extends javax.swing.JInternalFrame {
     private ArrayList<Produto> listaProdutos; // Lista para armazenar os produtos
+    
     /**
      * Creates new form cadprodutos
      */
@@ -52,6 +54,12 @@ public class cadprodutos extends javax.swing.JInternalFrame {
         jTextFieldCodigo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldCodigoActionPerformed(evt);
+            }
+        });
+
+        jTextFieldPreco.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldPrecoActionPerformed(evt);
             }
         });
 
@@ -130,27 +138,115 @@ public class cadprodutos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTextFieldCodigoActionPerformed
 
     private void cadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastrarActionPerformed
+         try {
+            // Obter e validar os dados dos campos
+            String nome = jTextFieldNome.getText().trim();
+            String codigo = jTextFieldCodigo.getText().trim();
+            String quantidadeTexto = jTextFieldQuantidade.getText().trim();
+            String precoTexto = jTextFieldPreco.getText().trim();
 
-        // Obter os dados inseridos
-        String nome = jTextFieldNome.getText();
-        String codigo = jTextFieldCodigo.getText();
-        int quantidade = Integer.parseInt(jTextFieldQuantidade.getText());
-        double preco = Double.parseDouble(jTextFieldPreco.getText());
+            // Validar campos obrigatórios
+            if (nome.isEmpty() || codigo.isEmpty() || quantidadeTexto.isEmpty() || precoTexto.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "Preencha todos os campos obrigatórios!", 
+                    "Aviso", 
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-        // Criar um novo produto
-        Produto produto = new Produto(listaProdutos.size() + 1, nome, codigo, quantidade, preco);
+            // Converter quantidade
+            int quantidade;
+            try {
+                quantidade = Integer.parseInt(quantidadeTexto);
+                if (quantidade < 0) {
+                    JOptionPane.showMessageDialog(this, 
+                        "A quantidade não pode ser negativa!", 
+                        "Erro", 
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Quantidade inválida! Digite um número inteiro.", 
+                    "Erro", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        // Adicionar à lista de produtos
-        listaProdutos.add(produto);
+            // Converter preço
+            double preco;
+            try {
+                preco = Double.parseDouble(precoTexto.replace(",", "."));
+                if (preco < 0) {
+                    JOptionPane.showMessageDialog(this, 
+                        "O preço não pode ser negativo!", 
+                        "Erro", 
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Preço inválido! Use números com vírgula ou ponto decimal.", 
+                    "Erro", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        // Exibir mensagem de sucesso
-        JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
+            // Criar o novo produto
+            int novoId = listaProdutos.size() + 1;
+            Produto produto = new Produto(novoId, nome, codigo, quantidade, preco);
 
-        // Fechar a janela
-        this.dispose();
+            // Adicionar ao banco de dados
+            boolean cadastradoNoBanco = ProdutoDAO.cadastrarProduto(produto);
+            
+            if (!cadastradoNoBanco) {
+                JOptionPane.showMessageDialog(this, 
+                    "Erro ao cadastrar no banco de dados!", 
+                    "Erro", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+              
+            
+            
+            // Adicionar à lista em memória
+            listaProdutos.add(produto);
+
+            // Mensagem de sucesso
+            JOptionPane.showMessageDialog(this, 
+                "Produto cadastrado com sucesso no SISHOTEL!\n" +
+                "ID: " + novoId + "\n" +
+                "Nome: " + nome + "\n" +
+                "Código: " + codigo + "\n" +
+                "Quantidade: " + quantidade + "\n" +
+                "Preço: R$ " + String.format("%.2f", preco), 
+                "Sucesso", 
+                JOptionPane.INFORMATION_MESSAGE);
+
+            // Limpar campos
+            limparCampos();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erro inesperado: " + e.getMessage(), 
+                "Erro", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void limparCampos() {
+        jTextFieldNome.setText("");
+        jTextFieldCodigo.setText("");
+        jTextFieldQuantidade.setText("");
+        jTextFieldPreco.setText("");
+        jTextFieldNome.requestFocus();
     
     }//GEN-LAST:event_cadastrarActionPerformed
 
+    private void jTextFieldPrecoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldPrecoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldPrecoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Cancelar;

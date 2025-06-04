@@ -5,6 +5,8 @@
  */
 package telas;
 
+import dao.PessoaDAO;
+
 /**
  *
  * @author Mycha
@@ -20,6 +22,10 @@ public class cadastrarhospede extends javax.swing.JInternalFrame {
         Camadacpf.setVisible(false);
         nomedaempresa.setVisible(false);
         
+    }
+
+    cadastrarhospede(PessoaDAO pessoaDAO) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     /**
