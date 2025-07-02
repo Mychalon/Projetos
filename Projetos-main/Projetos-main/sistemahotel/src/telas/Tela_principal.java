@@ -6,6 +6,8 @@
 package telas;
 
 
+import dao.ConexaoBD;
+import dao.HospedeDAO;
 import dao.QuartoDAO;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,6 +15,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import java.sql.Connection;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
@@ -26,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import model.Produto;
 import javax.swing.JTextField;
+import model.Hospede;
 import model.WrapLayout;
 
 
@@ -106,13 +110,29 @@ public class Tela_principal extends javax.swing.JFrame {
 }
 
 private void abrirJanelaQuarto(Quarto quarto) {
-    JDialog dialog = new JDialog(this, "Gerenciar Quarto " + quarto.getNumero(), true);
-    JanelaQuarto form = new JanelaQuarto(quarto, dialog, this);
-    dialog.add(form);
-    dialog.pack();
-    dialog.setLocationRelativeTo(this);
-    dialog.setVisible(true);
+    if (quarto == null) {
+        JOptionPane.showMessageDialog(this, 
+            "Erro: Quarto não selecionado corretamente",
+            "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    try {
+        Connection conexao = ConexaoBD.getConexao();
+        JDialog dialog = new JDialog(this, "Gerenciar Quarto " + quarto.getNumero(), true);
+        JanelaQuarto form = new JanelaQuarto(quarto, dialog, this, conexao);
+        dialog.add(form);
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, 
+            "Erro ao conectar ao banco de dados: " + ex.getMessage(),
+            "Erro", JOptionPane.ERROR_MESSAGE);
+    }
 }
+
+
  
 
     
@@ -214,6 +234,7 @@ private void abrirJanelaQuarto(Quarto quarto) {
         jMenuItem33 = new javax.swing.JMenuItem();
         jMenuItem34 = new javax.swing.JMenuItem();
         sobresistema = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         Logoff = new javax.swing.JMenu();
         Sair = new javax.swing.JMenu();
 
@@ -588,6 +609,14 @@ private void abrirJanelaQuarto(Quarto quarto) {
         sobresistema.setText("Sobre o Sistema");
         Ferramentas.add(sobresistema);
 
+        jMenuItem1.setText("Configuração");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        Ferramentas.add(jMenuItem1);
+
         jMenuBar1.add(Ferramentas);
 
         Logoff.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/logoff.png"))); // NOI18N
@@ -767,6 +796,16 @@ private void abrirJanelaQuarto(Quarto quarto) {
 
 
     }//GEN-LAST:event_ConsultarServiçosActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        
+        Conf c = new Conf();
+        teladefundo.add(c);
+        c.setVisible(true);
+        
+        
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -816,6 +855,7 @@ private void abrirJanelaQuarto(Quarto quarto) {
     private javax.swing.JMenu jMenu17;
     private javax.swing.JMenu jMenu18;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem21;
     private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem23;
@@ -846,10 +886,6 @@ private void abrirJanelaQuarto(Quarto quarto) {
     }
 
    public void atualizarBotaoQuarto(Quarto quarto) {
-    
-    System.out.println("DEBUG - Atualizando quarto " + quarto.getNumero() + 
-                      " - Status: " + quarto.getStatus()); // Mensagem de depuração
-    
     for (Component comp : painelDosBotoes.getComponents()) {
         if (comp instanceof JButton) {
             JButton btn = (JButton) comp;
@@ -857,9 +893,20 @@ private void abrirJanelaQuarto(Quarto quarto) {
                 if ("hospedado".equalsIgnoreCase(quarto.getStatus())) {
                     btn.setBackground(Color.RED);
                     btn.setIcon(new ImageIcon(getClass().getResource("/imagens/porta_vermelha.png")));
-                    btn.setToolTipText("Ocupado por: " + quarto.getNomeHospede() + 
-                                     "\nCPF: " + quarto.getCpfHospede() +
-                                     "\nTelefone: " + quarto.getTelefone());
+                    
+                    // Obter informações do hóspede do banco
+                    try {
+                        Hospede hospede = HospedeDAO.buscarPorQuarto(quarto.getIdQuarto());
+                        if (hospede != null) {
+                            btn.setToolTipText("Ocupado por: " + hospede.getNome() + 
+                                             "\nCPF: " + hospede.getCpfHospede()+
+                                             "\nTelefone: " + hospede.getTelefone()+
+                                             "\nCheck-in: " + quarto.getCheckIn() +
+                                             "\nCheck-out: " + quarto.getCheckOut());   
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 } else {
                     btn.setBackground(Color.GREEN);
                     btn.setIcon(new ImageIcon(getClass().getResource("/imagens/porta_verde.png")));
@@ -871,15 +918,6 @@ private void abrirJanelaQuarto(Quarto quarto) {
     }
     painelDosBotoes.revalidate();
     painelDosBotoes.repaint();
-
-    // Atualiza o banco de dados
-    try {
-        QuartoDAO.atualizarStatusQuarto(quarto);
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(this, 
-            "Erro ao atualizar status do quarto: " + ex.getMessage(),
-            "Erro", JOptionPane.ERROR_MESSAGE);
-    }
 }
     
     }

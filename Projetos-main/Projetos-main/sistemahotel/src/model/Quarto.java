@@ -1,13 +1,16 @@
 package telas;
 
+import javax.swing.JLabel;
+
 public class Quarto {
     private int idQuarto;
     private String numero;
     private String tipo;
     private String status;
-    private String nomeHospede;
-    private String cpfHospede;
-     private String telefone;
+    private int limiteAcompanhantes;
+    private String checkIn;
+    private String checkOut;
+
      
     
     // Construtor vazio
@@ -18,16 +21,52 @@ public class Quarto {
         this.numero = numero;
     }
     
+    
+    
     // Construtor com parâmetros
     public Quarto(int idQuarto, String numero, String tipo, String status) {
         this.idQuarto = idQuarto;
         this.numero = numero;
         this.tipo = tipo;
         this.status = status;
+        
+    }
+// No construtor ou métodos que criam o quarto, defina o limite baseado no tipo:
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+        switch(tipo) {
+            case "Luxo":
+                this.limiteAcompanhantes = 3;
+                break;
+            case "Executivo":
+                this.limiteAcompanhantes = 2;
+                break;
+            default:
+                this.limiteAcompanhantes = 1;
+        }
+    }
+
+    public int getLimiteAcompanhantes() {
+        return limiteAcompanhantes;
     }
 
     
     // Getters e Setters completos
+     public String getCheckIn() {
+        return checkIn;
+    }
+
+    public void setCheckIn(String checkIn) {
+        this.checkIn = checkIn;
+    }
+
+    public String getCheckOut() {
+        return checkOut;
+    }
+
+    public void setCheckOut(String checkOut) {
+        this.checkOut = checkOut;
+    }
     public String getNumero() {
         return numero;
     }
@@ -47,11 +86,7 @@ public class Quarto {
     public String getTipo() {
         return tipo;
     }
-    
-    public void setTipo(String tipo) {
-        this.tipo = tipo; // Implementação correta agora
-    }
-    
+      
     public String getStatus() {
         return status;
     }
@@ -66,34 +101,6 @@ public class Quarto {
         return numero + " - " + tipo;
     }
 
-     // Adicione estes métodos:
-    public String getNomeHospede() {
-        return this.nomeHospede;
-    }
-    
-    public String getCpfHospede() {
-        return this.cpfHospede;
-    }
-    
-    public String getTelefone() {
-        return this.telefone;
-    }
-    
-    // E também os setters correspondentes:
-    public void setNomeHospede(String nomeHospede) {
-        this.nomeHospede = nomeHospede;
-    }
-    
-    public void setCpfHospede(String cpfHospede) {
-        this.cpfHospede = cpfHospede;
-    }
-    
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-    
-
-    
    
-    
+ 
 }

@@ -25,8 +25,7 @@ public class cadquarto extends javax.swing.JInternalFrame {
     private javax.swing.JTextField nomeQuarto;
     
     cadquarto() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+       initComponents();}
    
     // Métodos para acessar os dados do formulário
     public String getNomeQuarto() {

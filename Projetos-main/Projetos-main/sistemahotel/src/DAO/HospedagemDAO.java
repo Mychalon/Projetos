@@ -13,7 +13,7 @@ public class HospedagemDAO {
     }
 
     public void registrarHospedagem(int idQuarto, int idHospede, int idFuncionario) throws SQLException {
-        String sql = "INSERT INTO hospedagem (id_quarto, id_hospede, funcionario, check_in) VALUES (?, ?, ?, NOW())";
+        String sql = "INSERT INTO hospedagem (id_quarto, id_hospede, id_funcionario, check_in) VALUES (?, ?, ?, NOW())";
         
         try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
             stmt.setInt(1, idQuarto);

@@ -7,25 +7,34 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import model.Hospede;
 import telas.Quarto;
 import telas.cadquarto;
 
 public class QuartoDAO {
-    
+     private final Connection connection;
+     
+     
+     public QuartoDAO(Connection connection) {
+        this.connection = connection;
+    }
     
     public static Quarto buscarPorId(int idQuarto) throws SQLException {
-    String sql = "SELECT * FROM quarto WHERE id = ?";
+   String sql = "SELECT * FROM quarto WHERE id = ?";
     try (Connection conexao = ConexaoBD.getConexao();
          PreparedStatement stmt = conexao.prepareStatement(sql)) {
         stmt.setInt(1, idQuarto);
         try (ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
-                return new Quarto(
+                Quarto quarto = new Quarto(
                     rs.getInt("id"),
                     rs.getString("numero"),
                     rs.getString("tipo"),
                     rs.getString("status")
                 );
+                quarto.setCheckIn(rs.getString("check_in"));
+                quarto.setCheckOut(rs.getString("check_out"));
+                return quarto;
             }
         }
     }
@@ -73,15 +82,15 @@ public static List<Quarto> listarQuartos() throws SQLException {
     }
     return quartos;
 }
-   public static void atualizarQuarto(Quarto quarto) throws SQLException {
+   public static void atualizarQuarto(Quarto quarto, Hospede hospede) throws SQLException {
     String sql = "UPDATE hospede SET nome=?, cpf=?, telefone=? WHERE id = ?";
     
     try (Connection conn = getConexao();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
         
-        stmt.setString(1, quarto.getNomeHospede());
-        stmt.setString(2, quarto.getCpfHospede());
-        stmt.setString(3, quarto.getTelefone());
+        stmt.setString(1, hospede.getNome());
+        stmt.setString(2, hospede.getCpfHospede());
+        stmt.setString(3, hospede.getTelefone());
         stmt.setString(4, quarto.getNumero());
         
         stmt.executeUpdate();
@@ -89,29 +98,43 @@ public static List<Quarto> listarQuartos() throws SQLException {
 
 }
 
-   public static boolean atualizarStatusQuarto(Quarto quarto) throws SQLException {
-       String sql = "UPDATE quarto SET status = ?, nome = ?, cpf = ?, telefone = ? WHERE numero = ?";
+    public QuartoDAO() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean atualizarStatusQuarto(Quarto quarto) throws SQLException {
+    String sql = "UPDATE quarto SET status = ? WHERE id = ?";
     
-    try (Connection conexao = ConexaoBD.getConexao();
-         PreparedStatement stmt = conexao.prepareStatement(sql)) {
+    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // Definir timeout para a consulta (em segundos)
+        stmt.setQueryTimeout(30);
         
-        // Debug: Mostra os valores que serão atualizados
-        System.out.println("DEBUG - Atualizando quarto " + quarto.getNumero() + 
-                         " para status: " + quarto.getStatus() +
-                         " - Nome: " + quarto.getNomeHospede());
+        stmt.setString(1, quarto.getStatus());
+        stmt.setInt(2, quarto.getIdQuarto());
         
-        stmt.setString(1, quarto.getStatus().toLowerCase()); // Garante minúsculas
-        stmt.setString(2, quarto.getNomeHospede());
-        stmt.setString(3, quarto.getCpfHospede());
-        stmt.setString(4, quarto.getTelefone());
-        stmt.setString(5, quarto.getNumero());
-        
-        int rowsUpdated = stmt.executeUpdate();
-        System.out.println("DEBUG - Linhas atualizadas: " + rowsUpdated);
-        
-        return rowsUpdated > 0;
+        int rowsAffected = stmt.executeUpdate();
+        return rowsAffected > 0;
+    } catch (SQLException e) {
+        if (e.getMessage().contains("Lock wait timeout")) {
+            throw new SQLException("Timeout ao atualizar quarto. Tente novamente.", e);
+        }
+        throw e;
     }
 }
+
+
+    public static boolean existeQuarto(int idQuarto) throws SQLException {
+    String sql = "SELECT id FROM quarto WHERE id = ?";
+    try (Connection conexao = ConexaoBD.getConexao();
+         PreparedStatement stmt = conexao.prepareStatement(sql)) {
+        stmt.setInt(1, idQuarto);
+        try (ResultSet rs = stmt.executeQuery()) {
+            return rs.next(); // Retorna true se o quarto existir
+        }
+    }
+}
+
+    
 
 }
 

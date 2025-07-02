@@ -14,6 +14,8 @@ public class Conexão {
     private final String USER = "root";
     private final String PASS = "1234";
     
+    
+    
     public Connection getConnection() throws SQLException {
         try {
             Class.forName(DRIVER);
