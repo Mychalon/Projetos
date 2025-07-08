@@ -5,6 +5,7 @@
 package telas;
 
 import dao.ProdutoDAO;
+import java.sql.SQLException;
 import model.Produto;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -138,109 +139,66 @@ public class cadprodutos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTextFieldCodigoActionPerformed
 
     private void cadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastrarActionPerformed
-         try {
-            // Obter e validar os dados dos campos
-            String nome = jTextFieldNome.getText().trim();
-            String codigo = jTextFieldCodigo.getText().trim();
-            String quantidadeTexto = jTextFieldQuantidade.getText().trim();
-            String precoTexto = jTextFieldPreco.getText().trim();
-
-            // Validar campos obrigatórios
-            if (nome.isEmpty() || codigo.isEmpty() || quantidadeTexto.isEmpty() || precoTexto.isEmpty()) {
-                JOptionPane.showMessageDialog(this, 
-                    "Preencha todos os campos obrigatórios!", 
-                    "Aviso", 
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // Converter quantidade
-            int quantidade;
-            try {
-                quantidade = Integer.parseInt(quantidadeTexto);
-                if (quantidade < 0) {
-                    JOptionPane.showMessageDialog(this, 
-                        "A quantidade não pode ser negativa!", 
-                        "Erro", 
-                        JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, 
-                    "Quantidade inválida! Digite um número inteiro.", 
-                    "Erro", 
-                    JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Converter preço
-            double preco;
-            try {
-                preco = Double.parseDouble(precoTexto.replace(",", "."));
-                if (preco < 0) {
-                    JOptionPane.showMessageDialog(this, 
-                        "O preço não pode ser negativo!", 
-                        "Erro", 
-                        JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, 
-                    "Preço inválido! Use números com vírgula ou ponto decimal.", 
-                    "Erro", 
-                    JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Criar o novo produto
-            int novoId = listaProdutos.size() + 1;
-            Produto produto = new Produto(novoId, nome, codigo, quantidade, preco);
-
-            // Adicionar ao banco de dados
-            boolean cadastradoNoBanco = ProdutoDAO.cadastrarProduto(produto);
-            
-            if (!cadastradoNoBanco) {
-                JOptionPane.showMessageDialog(this, 
-                    "Erro ao cadastrar no banco de dados!", 
-                    "Erro", 
-                    JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-              
-            
-            
-            // Adicionar à lista em memória
-            listaProdutos.add(produto);
-
-            // Mensagem de sucesso
+    // Obter valores dos campos
+    String nome = jTextFieldNome.getText().trim();
+    String codigo = jTextFieldCodigo.getText().trim();
+    String quantidadeStr = jTextFieldQuantidade.getText().trim();
+    String precoStr = jTextFieldPreco.getText().trim();
+    
+    // Validar campos obrigatórios
+    if (nome.isEmpty() || codigo.isEmpty() || quantidadeStr.isEmpty() || precoStr.isEmpty()) {
+        JOptionPane.showMessageDialog(this, 
+            "Todos os campos são obrigatórios!", 
+            "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    try {
+        // Converter valores
+        int quantidade = Integer.parseInt(quantidadeStr);
+        double preco = Double.parseDouble(precoStr.replace(",", "."));
+        
+        // Criar objeto Produto
+        Produto produto = new Produto(0, nome, codigo, quantidade, preco);
+        
+        // Debug: Mostrar produto antes de salvar
+        System.out.println("Produto a ser salvo:");
+        System.out.println(produto.toString());
+        
+        // Tentar salvar
+        if (ProdutoDAO.cadastrarProduto(produto)) {
             JOptionPane.showMessageDialog(this, 
-                "Produto cadastrado com sucesso no SISHOTEL!\n" +
-                "ID: " + novoId + "\n" +
-                "Nome: " + nome + "\n" +
-                "Código: " + codigo + "\n" +
-                "Quantidade: " + quantidade + "\n" +
-                "Preço: R$ " + String.format("%.2f", preco), 
-                "Sucesso", 
-                JOptionPane.INFORMATION_MESSAGE);
-
+                "Produto salvo com sucesso! Nome: " + produto.getNome(),
+                "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            
             // Limpar campos
             limparCampos();
-            
-        } catch (Exception e) {
+        } else {
             JOptionPane.showMessageDialog(this, 
-                "Erro inesperado: " + e.getMessage(), 
-                "Erro", 
-                JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+                "Falha ao salvar produto no banco de dados",
+                "Erro", JOptionPane.ERROR_MESSAGE);
         }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, 
+            "Valores numéricos inválidos!\n" +
+            "Quantidade deve ser inteiro\n" +
+            "Preço deve ser decimal (use . ou ,)",
+            "Erro", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, 
+            "Erro inesperado: " + e.getMessage(),
+            "Erro", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
     }
+}
 
-    private void limparCampos() {
-        jTextFieldNome.setText("");
-        jTextFieldCodigo.setText("");
-        jTextFieldQuantidade.setText("");
-        jTextFieldPreco.setText("");
-        jTextFieldNome.requestFocus();
+private void limparCampos() {
+    jTextFieldNome.setText("");
+    jTextFieldCodigo.setText("");
+    jTextFieldQuantidade.setText("");
+    jTextFieldPreco.setText("");
+    jTextFieldNome.requestFocus();
+
     
     }//GEN-LAST:event_cadastrarActionPerformed
 
@@ -260,4 +218,8 @@ public class cadprodutos extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jTextFieldPreco;
     private javax.swing.JTextField jTextFieldQuantidade;
     // End of variables declaration//GEN-END:variables
+
+    private int gerarNovoId() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

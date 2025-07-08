@@ -3,35 +3,44 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
 package telas;
+import dao.ProdutoDAO;
 import model.Produto;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.sql.SQLException;
+import java.util.List;
+
 
 public class consprodutos extends javax.swing.JInternalFrame {
- 
     private ArrayList<Produto> listaProdutos;
+    private ProdutoDAO produtoDAO; // Adicionar referência ao DAO
 
-    public consprodutos(ArrayList<Produto> listaProdutos) {
-        initComponents(); // Inicializa os componentes da interface gráfica
-        this.listaProdutos = listaProdutos;
-        // Aqui você pode carregar os produtos na interface, se necessário
-    }
-private void carregarProdutosNaTabela() {
-        // Cria um modelo de tabela
-        DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
-        modelo.setRowCount(0); // Limpa a tabela
-
-        // Adiciona os produtos na tabela
-        for (Produto produto : listaProdutos) {
-            Object[] linha = {
-                produto.getCodigo(),
-                produto.getNome(),
-                produto.getQuantidade(),
-                produto.getPreco()
-            };
-            modelo.addRow(linha);
+    public consprodutos() {
+        initComponents();
+        try {
+            produtoDAO = new ProdutoDAO(); // Inicializa o DAO
+            listaProdutos = (ArrayList<Produto>) produtoDAO.buscarTodos(); // Busca todos os produtos
+            carregarProdutosNaTabela();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao conectar com o banco de dados: " + ex.getMessage());
         }
+    }
+
+private void carregarProdutosNaTabela() {
+    DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+    modelo.setRowCount(0);
+
+    if (listaProdutos != null) {
+        for (Produto produto : listaProdutos) {
+            modelo.addRow(new Object[]{
+                produto.getCodigo(),       // Coluna 0 - Código
+                produto.getNome(),        // Coluna 1 - Nome
+                produto.getQuantidade(),   // Coluna 2 - Quantidade
+                produto.getPreco()        // Coluna 3 - Preço
+            });
+        }
+    }
 }
 
     /**
@@ -174,42 +183,104 @@ private void carregarProdutosNaTabela() {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-// Procurar produto pelo nome
-        String nomeProduto = jTextField1.getText().toLowerCase();
+ String nomeProduto = jTextField1.getText().trim().toLowerCase();
+    
+    if (nomeProduto.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Digite um nome para pesquisar");
+        return;
+    }
+
+    try {
         DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
         modelo.setRowCount(0); // Limpa a tabela
-
-        for (Produto produto : listaProdutos) {
-            if (produto.getNome().toLowerCase().contains(nomeProduto)) {
-                Object[] linha = {
-                    produto.getCodigo(),
-                    produto.getNome(),
-                    produto.getQuantidade(),
-                    produto.getPreco()
-                };
-                modelo.addRow(linha);
-            }
+        
+        // Busca produtos que contenham o texto digitado (busca parcial)
+        List<Produto> produtosEncontrados = produtoDAO.buscarPorNome(nomeProduto);
+        
+        for (Produto produto : produtosEncontrados) {
+            modelo.addRow(new Object[]{
+                produto.getCodigo(),
+                produto.getNome(),
+                produto.getQuantidade(),
+                produto.getPreco()
+            });
         }
+        
+        if (modelo.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Nenhum produto encontrado com esse nome");
+        }
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, 
+            "Erro ao buscar produtos: " + ex.getMessage(),
+            "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+    
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-// Editar produto selecionado
-        int linhaSelecionada = jTable1.getSelectedRow();
-        if (linhaSelecionada >= 0) {
-            String codigo = (String) jTable1.getValueAt(linhaSelecionada, 0);
-            // Aqui você pode abrir uma tela de edição para o produto com o código selecionado
-            JOptionPane.showMessageDialog(this, "Editar produto: " + codigo);
+     int linhaSelecionada = jTable1.getSelectedRow();
+    
+    if (linhaSelecionada < 0) {
+        JOptionPane.showMessageDialog(this, 
+            "Selecione um produto para editar",
+            "Aviso", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    try {
+        // Obtém o código do produto selecionado
+        String codigo = (String) jTable1.getValueAt(linhaSelecionada, 0);
+        
+        // Busca o produto completo no banco
+        Produto produto = produtoDAO.buscarPorCodigo(codigo);
+        
+        if (produto != null) {
+            // Abre a tela de edição
+            EditarProduto editar = new EditarProduto(produto);
+            editar.setVisible(true);
+            
+            // Adiciona a janela de edição ao desktop pane
+            this.getParent().add(editar);
+            editar.setLocation(
+                (this.getParent().getWidth() - editar.getWidth()) / 2,
+                (this.getParent().getHeight() - editar.getHeight()) / 2
+            );
+            
+            try {
+                editar.setSelected(true);
+            } catch (java.beans.PropertyVetoException e) {
+                e.printStackTrace();
+            }
+            
+            // Atualiza a tabela após edição
+            listaProdutos = (ArrayList<Produto>) produtoDAO.buscarTodos();
+            carregarProdutosNaTabela();
         } else {
-            JOptionPane.showMessageDialog(this, "Selecione um produto para editar!");
+            JOptionPane.showMessageDialog(this, 
+                "Produto não encontrado no banco de dados",
+                "Erro", JOptionPane.ERROR_MESSAGE);
         }
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, 
+            "Erro ao buscar produto: " + ex.getMessage(),
+            "Erro", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    }
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-// Limpar a pesquisa e recarregar todos os produtos
-        jTextField1.setText("");
+jTextField1.setText(""); // Limpa o campo de pesquisa
+    
+    try {
+        // Recarrega todos os produtos do banco
+        listaProdutos = (ArrayList<Produto>) produtoDAO.buscarTodos();
         carregarProdutosNaTabela();
-
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, 
+            "Erro ao recarregar produtos: " + ex.getMessage(),
+            "Erro", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_jButton2ActionPerformed
 
 

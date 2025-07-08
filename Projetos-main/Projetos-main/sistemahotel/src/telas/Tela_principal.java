@@ -698,9 +698,9 @@ private void abrirJanelaQuarto(Quarto quarto) {
 
     private void VendasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VendasMouseClicked
         // TODO add your handling code here:
-        Vendaprodutos vendas = new Vendaprodutos(listaProdutos);
-        teladefundo.add(vendas);
-        vendas.setVisible(true);
+        Vendaprodutos venda = new Vendaprodutos();
+        teladefundo.add(venda);
+        venda.setVisible(true);
       
     }//GEN-LAST:event_VendasMouseClicked
 
@@ -781,7 +781,7 @@ private void abrirJanelaQuarto(Quarto quarto) {
     private void ConsultarprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarprodutosActionPerformed
         // TODO add your handling code here:
       
-        consprodutos consulta = new consprodutos(listaProdutos);
+        consprodutos consulta = new consprodutos();
         teladefundo.add(consulta);
         consulta.setVisible(true);
 
