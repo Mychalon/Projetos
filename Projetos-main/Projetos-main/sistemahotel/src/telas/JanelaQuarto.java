@@ -11,9 +11,6 @@ import java.sql.Connection;
 import javax.swing.*;
 import javax.swing.JScrollPane;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.text.MaskFormatter;
 import java.io.IOException;
 
@@ -42,7 +39,6 @@ public class JanelaQuarto extends JPanel {
     private JFormattedTextField telefone;
     private JFormattedTextField txtCPFAcompanhante;
     private JFormattedTextField txtTelefoneAcompanhante;
-    private Connection conexao;
     private JFormattedTextField Email;
     private QuartoDAO quartoDAO;
     private JPanel novoAcompanhantePanel;
@@ -54,7 +50,7 @@ public class JanelaQuarto extends JPanel {
     private JTextField txtPlacaVeiculo;
     private JButton btnAdiantamento;
     private JButton btnEditarHospede;
-    private JButton btnEditarAcompanhante;
+    private JButton btnAdicionarAcompanhante;
     private JLabel lblCheckIn;
     private JLabel lblCheckOut;
 
@@ -62,28 +58,16 @@ public class JanelaQuarto extends JPanel {
         if (quarto == null) {
             throw new IllegalArgumentException("O objeto Quarto não pode ser nulo");
         }
-
+        
         this.quarto = quarto;
         this.parentDialog = parentDialog;
         this.telaPrincipal = telaPrincipal;
         this.connection = conexao;
         this.quartoDAO = new QuartoDAO(conexao);
+        
+        
+         // Busca o hóspede associado ao quarto ao inicializar
 
-        // Busca o hóspede associado ao quarto ao inicializar
-        try {
-            this.hospedeAtual = HospedeDAO.buscarPorQuarto(quarto.getIdQuarto());
-            carregarHorariosQuarto(quarto.getIdQuarto());
-            if (this.hospedeAtual != null) {
-                System.out.println("Hóspede encontrado. ID: " + this.hospedeAtual.getIdhospede());
-                System.out.println("Nome: " + this.hospedeAtual.getNome());
-                System.out.println("Quarto ID: " + this.hospedeAtual.getIdQuarto());
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Erro ao buscar hóspede: " + ex.getMessage(),
-                    "Erro", JOptionPane.ERROR_MESSAGE);
-            this.hospedeAtual = null;
-        }
         try {
             this.hospedeAtual = HospedeDAO.buscarPorQuarto(quarto.getIdQuarto());
             if (this.hospedeAtual != null) {
@@ -100,8 +84,33 @@ public class JanelaQuarto extends JPanel {
        
          
         initComponents();
+        
+         
+        carregarDadosHospede(); // Adicione esta linha
+        configurarVisibilidadeBotoes();
+        
+        
     }
-
+    
+    private void carregarDadosHospede() {
+   if (hospedeAtual != null) {
+        txtNomeHospede.setText(hospedeAtual.getNome());
+        txtCPF.setText(hospedeAtual.getCpfHospede());
+        telefone.setText(hospedeAtual.getTelefone());
+        txtPlacaVeiculo.setText(hospedeAtual.getPlacaVeiculo());
+        
+        // Torna o botão de acompanhante visível
+        if (btnAdicionarAcompanhante != null) {
+            btnAdicionarAcompanhante.setVisible(true);
+        }
+    } else {
+        // Garante que o botão está invisível se não houver hóspede
+        if (btnAdicionarAcompanhante != null) {
+            btnAdicionarAcompanhante.setVisible(false);
+        }
+    }
+}
+    
     private void initComponents() {
 
         
@@ -116,6 +125,7 @@ public class JanelaQuarto extends JPanel {
         lblCheckIn.setForeground(new Color(0, 100, 200)); // Azul
         lblCheckOut.setForeground(new Color(200, 0, 0)); // Vermelho
         
+    
         
         
         // Painel principal com borda e espaçamento
@@ -150,7 +160,7 @@ public class JanelaQuarto extends JPanel {
     addLabelWithIcon(quartoPanel, "Check-out:", "/imagens/checkout.png", lblCheckOut);
     
     formPanel.add(quartoPanel);
-    formPanel.add(Box.createRigidArea(new Dimension(0, 15))); // Espaçamento
+    formPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Espaçamento
     
     // ========== SEÇÃO 2: INFORMAÇÕES DO HÓSPEDE ==========
     JPanel hospedePanel = createStyledPanel("Informações do Hóspede");
@@ -268,19 +278,31 @@ formPanel.add(lblLimiteAcompanhantes);
     btnEditarHospede.addActionListener(e -> editarHospede());
     actionPanel.add(btnEditarHospede);
     
+   
+    
     btnAdiantamento = createStyledButton("Adiantamento", new Color(80, 160, 80));
     btnAdiantamento.addActionListener(e -> registrarAdiantamento());
     actionPanel.add(btnAdiantamento);
     
-    JButton btnSalvar = createStyledButton("Salvar", new Color(70, 130, 180));
-    btnSalvar.addActionListener(e -> {
-        try {
-            salvarInformacoes();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    });
-    actionPanel.add(btnSalvar);
+    // Botão para adicionar acompanhante
+   JButton btnAdicionarAcompanhante = createStyledButton("Adicionar Acompanhante", new Color(100, 150, 200));
+   btnAdicionarAcompanhante.addActionListener(e -> adicionarAcompanhante());
+   btnAdicionarAcompanhante.setVisible(hospedeAtual != null);  
+   actionPanel.add(btnAdicionarAcompanhante);
+   
+   JButton btnSalvar = createStyledButton("Salvar", new Color(70, 130, 180));
+btnSalvar.addActionListener(e -> {
+    try {
+        // Limpa os campos de acompanhante antes de salvar
+        txtAcompanhantes.setText("");
+        txtCPFAcompanhante.setText("");
+        txtTelefoneAcompanhante.setText("");
+        salvarInformacoes();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+});
+actionPanel.add(btnSalvar);
     
     JButton btnFechar = createStyledButton("Fechar", new Color(160, 80, 80));
     btnFechar.addActionListener(e -> fecharJanela());
@@ -383,11 +405,118 @@ private void setFieldsEditable(boolean editable) {
     telefone.setEditable(editable);
     txtPlacaVeiculo.setEditable(editable);
 }
-    
-private void salvarInformacoes() throws IOException, SQLException {
-        if (!validarCampos()) {
+
+
+   private void adicionarAcompanhante() {
+    // Verificar se há um hóspede principal
+    if (hospedeAtual == null) {
+        JOptionPane.showMessageDialog(this, 
+            "Você precisa primeiro salvar o hóspede principal antes de adicionar acompanhantes",
+            "Atenção", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    // Validar campos do acompanhante
+    if (txtAcompanhantes.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, 
+            "O nome do acompanhante é obrigatório",
+            "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    String cpf = txtCPFAcompanhante.getText().replaceAll("[^0-9]", "");
+    if (cpf.length() != 11) {
+        JOptionPane.showMessageDialog(this, 
+            "CPF deve conter 11 dígitos",
+            "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    String telefone = txtTelefoneAcompanhante.getText().replaceAll("[^0-9]", "");
+    if (telefone.length() < 10 || telefone.length() > 11) {
+        JOptionPane.showMessageDialog(this, 
+            "Telefone inválido (deve ter 10 ou 11 dígitos)",
+            "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    try {
+        // Verificar se o acompanhante já existe
+        AcompanhanteDAO acompanhanteDAO = new AcompanhanteDAO(connection);
+        if (acompanhanteDAO.existeAcompanhantePorCPF(cpf, hospedeAtual.getIdhospede())) {
+            JOptionPane.showMessageDialog(this, 
+                "Já existe um acompanhante com este CPF",
+                "Acompanhante Duplicado", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+        // Verificar limite de acompanhantes
+        List<Acompanhante> acompanhantes = AcompanhanteDAO.buscarPorHospede(hospedeAtual.getIdhospede());
+        if (acompanhantes.size() >= calcularLimiteAcompanhantes()) {
+            JOptionPane.showMessageDialog(this,
+                "Limite de " + calcularLimiteAcompanhantes() + " acompanhantes atingido",
+                "Limite Atingido", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Confirmar com o usuário
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Confirmar cadastro do acompanhante?\n" +
+            "Nome: " + txtAcompanhantes.getText() + "\n" +
+            "CPF: " + txtCPFAcompanhante.getText() + "\n" +
+            "Telefone: " + txtTelefoneAcompanhante.getText(),
+            "Confirmar Acompanhante", JOptionPane.YES_NO_OPTION);
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        // Criar e salvar o acompanhante
+        Acompanhante acompanhante = criarAcompanhanteFromForm(hospedeAtual.getIdhospede());
+        acompanhanteDAO.salvar(acompanhante);
+
+        // Limpar campos e atualizar lista
+        txtAcompanhantes.setText("");
+        txtCPFAcompanhante.setText("");
+        txtTelefoneAcompanhante.setText("");
+        carregarAcompanhantes(hospedeAtual.getIdhospede());
+
+        JOptionPane.showMessageDialog(this, 
+            "Acompanhante cadastrado com sucesso!",
+            "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this,
+            "Erro ao cadastrar acompanhante: " + ex.getMessage(),
+            "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+private boolean validarCamposAcompanhante() {
+    if (txtAcompanhantes.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "O nome do acompanhante é obrigatório", "Erro", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+    
+    String cpf = txtCPFAcompanhante.getText().replaceAll("[^0-9]", "");
+    if (cpf.length() != 11) {
+        JOptionPane.showMessageDialog(this, "CPF do acompanhante deve conter 11 dígitos", "Erro", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+    
+    String telefone = txtTelefoneAcompanhante.getText().replaceAll("[^0-9]", "");
+    if (telefone.length() < 10 || telefone.length() > 11) {
+        JOptionPane.showMessageDialog(this, "Telefone do acompanhante inválido", "Erro", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+    
+    return true;
+}
+
+private void salvarInformacoes() throws IOException, SQLException {
+          if (!validarCampos()) {
+        return;
+    }
 
         Connection conexao = null;
         try {
@@ -399,26 +528,16 @@ private void salvarInformacoes() throws IOException, SQLException {
             HospedeDAO hospedeDAO = new HospedeDAO(conexao);
             int idhospede = hospedeDAO.salvar(hospede);
 
-            // 2. Salvar acompanhantes (se houver)
-            if (txtAcompanhantes.getText() != null && !txtAcompanhantes.getText().trim().isEmpty()) {
-                AcompanhanteDAO acompanhanteDAO = new AcompanhanteDAO(conexao);
-                Acompanhante acompanhante = criarAcompanhanteFromForm(idhospede);
-                acompanhanteDAO.salvar(acompanhante);
-            }
 
-            if (hospedeAtual != null) {
-                List<Acompanhante> acompanhantes = AcompanhanteDAO.buscarPorHospede(hospedeAtual.getIdhospede());
-                if (acompanhantes.size() >= quarto.getLimiteAcompanhantes()) {
-                    JOptionPane.showMessageDialog(this,
-                            "Limite de " + quarto.getLimiteAcompanhantes() + " acompanhantes atingido para este quarto",
-                            "Erro", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            }
-            // Atualiza a lista de acompanhantes após salvar
-            if (hospedeAtual != null) {
-                carregarAcompanhantes(hospedeAtual.getidhospede());
-            }
+     
+        
+         this.hospedeAtual = hospedeDAO.buscarPorId(idhospede);
+         
+          if (this.hospedeAtual == null) {
+            throw new SQLException("Falha ao recuperar dados do hóspede após cadastro");
+        }
+          
+        configurarVisibilidadeBotoes(); // Atualiza os botões
 
             // Atualizar status do quarto
             quarto.setStatus("ocupado");
@@ -494,6 +613,12 @@ private void salvarInformacoes() throws IOException, SQLException {
         }
     }
     
+private void configurarVisibilidadeBotoes() {
+    boolean hospedeExiste = hospedeAtual != null;
+    
+    if (btnAdicionarAcompanhante != null) {
+        btnAdicionarAcompanhante.setVisible(hospedeExiste);
+    }}
 
 private void verificarLimiteAcompanhantes() {
         try {
@@ -648,16 +773,16 @@ private int calcularLimiteAcompanhantes() {
 
     public void dispose() {
         try {
-            if (conexao != null && !conexao.isClosed()) {
-                conexao.close();
-            }
-        } catch (SQLException ex) {
-            System.err.println("Erro ao fechar conexão: " + ex.getMessage());
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
         }
+    } catch (SQLException ex) {
+        System.err.println("Erro ao fechar conexão: " + ex.getMessage());
+    }
 
-        if (parentDialog != null) {
-            parentDialog.dispose();
-        }
+    if (parentDialog != null) {
+        parentDialog.dispose();
+    }
     }
 
     private boolean validarCampos() {
@@ -742,22 +867,42 @@ private int calcularLimiteAcompanhantes() {
         
         List<Acompanhante> acompanhantes = AcompanhanteDAO.buscarPorHospede(idHospede);
         
-        for (Acompanhante a : acompanhantes) {
-            JPanel panelAcomp = new JPanel(new GridLayout(0, 2, 5, 5));
-            panelAcomp.setBorder(BorderFactory.createEtchedBorder());
-            
-            panelAcomp.add(new JLabel("Nome:"));
-            panelAcomp.add(new JLabel(a.getNome()));
-            
-            panelAcomp.add(new JLabel("CPF:"));
-            panelAcomp.add(new JLabel(a.getCpfacompanhante()));
-            
-            panelAcomp.add(new JLabel("Telefone:"));
-            panelAcomp.add(new JLabel(a.getTelefone()));
-            
-            panelAcompanhantes.add(panelAcomp);
+        
+        if (acompanhantes.isEmpty()) {
+            panelAcompanhantes.add(new JLabel("Nenhum acompanhante cadastrado"));
+        } else {
+            for (Acompanhante a : acompanhantes) {
+                JPanel panelAcomp = new JPanel(new GridLayout(0, 2, 5, 5));
+                panelAcomp.setBorder(BorderFactory.createTitledBorder("Acompanhante #" + a.getId()));
+                
+                panelAcomp.add(new JLabel("Nome:"));
+                panelAcomp.add(new JLabel(a.getNome()));
+                
+                panelAcomp.add(new JLabel("CPF:"));
+                panelAcomp.add(new JLabel(formatarCPF(a.getCpfacompanhante())));
+                
+                panelAcomp.add(new JLabel("Telefone:"));
+                panelAcomp.add(new JLabel(formatarTelefone(a.getTelefone())));
+                
+                panelAcompanhantes.add(panelAcomp);
+                panelAcompanhantes.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
         }
         
+        // Atualizar contagem
+        lblLimiteAcompanhantes.setText(String.format(
+            "Acompanhantes: %d/%d (Limite)", 
+            acompanhantes.size(), 
+            calcularLimiteAcompanhantes()));
+        
+        panelAcompanhantes.revalidate();
+        panelAcompanhantes.repaint();
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this,
+            "Erro ao carregar acompanhantes: " + ex.getMessage(),
+            "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+    
         // Adiciona o label de limite
         lblLimiteAcompanhantes = new JLabel();
         panelAcompanhantes.add(lblLimiteAcompanhantes);
@@ -767,51 +912,65 @@ private int calcularLimiteAcompanhantes() {
         
         panelAcompanhantes.revalidate();
         panelAcompanhantes.repaint();
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(this,
-            "Erro ao carregar acompanhantes: " + ex.getMessage(),
-            "Erro", JOptionPane.ERROR_MESSAGE);
+    } 
+    
+    
+    private String formatarCPF(String cpf) {
+    if (cpf == null || cpf.length() != 11) return cpf;
+    return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9);
+}
+
+private String formatarTelefone(String telefone) {
+    if (telefone == null) return "";
+    if (telefone.length() == 11) {
+        return "(" + telefone.substring(0, 2) + ") " + telefone.substring(2, 7) + "-" + telefone.substring(7);
+    } else if (telefone.length() == 10) {
+        return "(" + telefone.substring(0, 2) + ") " + telefone.substring(2, 6) + "-" + telefone.substring(6);
     }
-    }
+    return telefone;
+}
 
     private void realizarCheckout() {
         if (txtValorDiaria.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Informe o valor da diária!",
-                    "Atenção", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+        JOptionPane.showMessageDialog(this,
+                "Informe o valor da diária!",
+                "Atenção", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
 
-        try {
-            double valorDiaria = Double.parseDouble(txtValorDiaria.getText());
+    try {
+        double valorDiaria = Double.parseDouble(txtValorDiaria.getText());
 
-            int confirm = JOptionPane.showConfirmDialog(this,
-                    "Confirmar check-out? Valor da diária: R$ " + valorDiaria,
-                    "Confirmação", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Confirmar check-out? Valor da diária: R$ " + valorDiaria,
+                "Confirmação", JOptionPane.YES_NO_OPTION);
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                quarto.setStatus("disponivel");
-                quartoDAO.atualizarStatusQuarto(quarto);
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Atualiza o status do quarto
+            quarto.setStatus("disponivel");
+            quartoDAO.atualizarStatusQuarto(quarto);
 
-                telaPrincipal.atualizarBotaoQuarto(quarto);
-                JOptionPane.showMessageDialog(this, "Check-out realizado com sucesso!");
-                fecharJanela();
-            }
-            // Atualizar o hóspede com a data de checkout
+            // Atualiza o hóspede com a data de checkout
             if (hospedeAtual != null) {
                 hospedeAtual.setCheckOut(new Date());
-                new HospedeDAO(conexao).atualizarCheckout(hospedeAtual);
+                HospedeDAO hospedeDAO = new HospedeDAO(connection); // Usa a conexão existente
+                hospedeDAO.atualizarCheckout(hospedeAtual);
             }
 
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this,
-                    "Valor da diária inválido! Use números (ex: 150.00)",
-                    "Erro", JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Erro ao atualizar o quarto: " + ex.getMessage(),
-                    "Erro", JOptionPane.ERROR_MESSAGE);
+            // Atualiza a interface
+            telaPrincipal.atualizarBotaoQuarto(quarto);
+            JOptionPane.showMessageDialog(this, "Check-out realizado com sucesso!");
+            fecharJanela();
         }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this,
+                "Valor da diária inválido! Use números (ex: 150.00)",
+                "Erro", JOptionPane.ERROR_MESSAGE);
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this,
+                "Erro ao atualizar o quarto: " + ex.getMessage(),
+                "Erro", JOptionPane.ERROR_MESSAGE);
+    }
 
     }
 

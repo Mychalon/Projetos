@@ -1,7 +1,5 @@
 package telas;
 
-import javax.swing.JLabel;
-
 public class Quarto {
     private int idQuarto;
     private String numero;
@@ -10,7 +8,7 @@ public class Quarto {
     private int limiteAcompanhantes;
     private String checkIn;
     private String checkOut;
-
+    private String descricao;
      
     
     // Construtor vazio
@@ -24,23 +22,32 @@ public class Quarto {
     
     
     // Construtor com parâmetros
-    public Quarto(int idQuarto, String numero, String tipo, String status) {
+    public Quarto(int idQuarto, String numero, String tipo, String status, String descricao) {
         this.idQuarto = idQuarto;
         this.numero = numero;
         this.tipo = tipo;
         this.status = status;
-        
+        this.descricao = descricao;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 // No construtor ou métodos que criam o quarto, defina o limite baseado no tipo:
     public void setTipo(String tipo) {
         this.tipo = tipo;
         switch(tipo) {
-            case "Luxo":
+            case "quadruplo":
                 this.limiteAcompanhantes = 3;
                 break;
-            case "Executivo":
+            case "triplo":
                 this.limiteAcompanhantes = 2;
                 break;
+            case "duplo":
             default:
                 this.limiteAcompanhantes = 1;
         }

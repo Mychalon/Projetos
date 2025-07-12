@@ -74,6 +74,22 @@ public class AcompanhanteDAO {
         throw new SQLException("Falha ao obter ID do Acompanhante");
     }
     }
+    
+    public boolean existeAcompanhantePorCPF(String cpf, int idHospede) throws SQLException {
+    String sql = "SELECT COUNT(*) FROM acompanhantes WHERE cpf = ? AND hospede_id = ?";
+    
+    try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+        stmt.setString(1, cpf);
+        stmt.setInt(2, idHospede);
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+    }
+    return false;
+    }
 }
 
      

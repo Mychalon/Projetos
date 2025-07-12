@@ -4,19 +4,70 @@
  */
 package telas;
 
+import java.sql.Connection;
+import dao.ConexaoBD;
+import dao.QuartoDAO;
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author HOTEL FENIX
  */
 public class consquartos extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form consquartos
-     */
+   
+    private Timer pesquisaTimer;
+    
     public consquartos() {
         initComponents();
+         configurarPesquisaInstantanea();
+        carregarQuartos();
+        
     }
 
+    
+    
+    
+    
+     private void carregarQuartos() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    model.setRowCount(0); // Limpa a tabela
+    
+    
+    // Simplesmente chama o método de pesquisa sem filtros
+    jTextFieldPesquisa.setText("");
+    jComboBoxFiltro.setSelectedIndex(0);
+    pesquisarquarto();
+    
+    try (Connection conexao = ConexaoBD.getConexao()) {
+        QuartoDAO quartoDAO = new QuartoDAO(conexao);
+        List<Quarto> quartos = quartoDAO.listarQuartos();
+        
+        for (Quarto quarto : quartos) {
+                     
+            // Adiciona linha na tabela
+            model.addRow(new Object[]{
+                quarto.getNumero(),
+                quarto.getTipo(),
+                quarto.getStatus(),
+                quarto.getDescricao()
+              
+            });
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, 
+            "Erro ao carregar dados: " + ex.getMessage(), 
+            "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -26,17 +77,87 @@ public class consquartos extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jTextFieldPesquisa = new javax.swing.JTextField();
+        jComboBoxFiltro = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+
         setClosable(true);
+
+        jLabel1.setText("Pesquisar");
+
+        jComboBoxFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Quarto", "Tipo", "Status", "Descrição" }));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTextFieldPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24)
+                        .addComponent(jComboBoxFiltro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Quarto", "Tipo", "Status", "Descrição"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -44,5 +165,86 @@ public class consquartos extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> jComboBoxFiltro;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextFieldPesquisa;
     // End of variables declaration//GEN-END:variables
+
+    private void pesquisarquarto() {
+       
+    String termo = jTextFieldPesquisa.getText().trim().toLowerCase();
+    String filtro = (String) jComboBoxFiltro.getSelectedItem();
+    
+    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    model.setRowCount(0); // Limpa a tabela
+    
+    try (Connection conexao = ConexaoBD.getConexao()) {
+        QuartoDAO quartoDAO = new QuartoDAO(conexao);
+        
+        // --- TRECHO NOVO AQUI ---
+        List<Quarto> quartos;
+        if (termo.isEmpty()) {
+            // Caso sem pesquisa - carrega todos
+            quartos = quartoDAO.listarQuartos(); 
+        } else {
+            // Caso com pesquisa - filtra no banco
+            quartos = quartoDAO.pesquisarQuartos(filtro, termo); 
+        }
+        // --- FIM DO TRECHO NOVO ---
+        
+        for (Quarto quarto : quartos) {
+            // Adiciona diretamente pois já veio filtrado do banco
+            model.addRow(new Object[]{
+                quarto.getNumero(),
+                quarto.getTipo(),
+                quarto.getStatus(),
+                quarto.getDescricao()
+            });
+        }
+        
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, 
+            "Erro ao pesquisar quartos: " + ex.getMessage(), 
+            "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+ }
+    
+    
+     private void configurarPesquisaInstantanea() {
+    // Adiciona o listener para pesquisa em tempo real
+    jTextFieldPesquisa.getDocument().addDocumentListener(new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            agendarPesquisa();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            agendarPesquisa();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            agendarPesquisa();
+        }
+    });
+    
+    // Inicializa o timer
+    pesquisaTimer = new Timer(300, e -> {
+        pesquisarquarto();
+        pesquisaTimer.stop();
+    });
+    pesquisaTimer.setRepeats(false);
+}
+
+private void agendarPesquisa() {
+    if (pesquisaTimer != null) {
+        pesquisaTimer.stop();
+    }
+    pesquisaTimer.start();
+}
 }

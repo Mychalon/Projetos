@@ -3,7 +3,7 @@ package model;
 import java.util.Date;
 
 public class Hospede {
-        private int idhospede;
+    private int idhospede;
     private int idQuarto;
     private String nome;
     private String cpf;
