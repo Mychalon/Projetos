@@ -5,7 +5,7 @@
  */
 package telas;
 
-
+import dao.CaixaDAO;
 import dao.ConexaoBD;
 import dao.HospedeDAO;
 import dao.QuartoDAO;
@@ -13,7 +13,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
-import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import javax.swing.JFrame;
@@ -31,6 +30,8 @@ import model.Produto;
 import javax.swing.JTextField;
 import model.Hospede;
 import model.WrapLayout;
+import java.sql.SQLException;
+import javax.swing.SwingUtilities;
 
 
 
@@ -39,22 +40,64 @@ public class Tela_principal extends javax.swing.JFrame {
         private final ArrayList<Produto> listaProdutos = new ArrayList<>();
         private JTextField jTextField1;  // Campo para nome do quarto
         private JTextField VALOR;  // Campo para valor do quarto
-        
-
+        private int idFuncionario;
+        private int idCaixa; // Adicione esta linha
 
     
 
 
        
-    public Tela_principal(String nomeUsuario, String tipoUsuario) {
+    public Tela_principal(String nomeUsuario, String tipoUsuario,  int idFuncionario) throws SQLException {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         jLabel3.setText(nomeUsuario);
         jLabel5.setText(tipoUsuario);
+        this.idFuncionario = idFuncionario;
         painelDosBotoes.setLayout(new WrapLayout(java.awt.FlowLayout.LEFT, 10, 10));
   
-        // Carrega os quartos do banco ao iniciar
-        carregarQuartosDoBanco();
+        
+    
+         verificarCaixaAbertoAsync();
+    
+    carregarQuartosDoBanco();
+    // No final do método initComponents() ou no construtor
+
+jScrollPane1.setWheelScrollingEnabled(true);
+jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
+jScrollPane1.getHorizontalScrollBar().setUnitIncrement(16);
+}
+
+private void verificarCaixaAbertoAsync() {
+       new Thread(() -> {
+        try {
+            // Verifica se há caixa aberto para este funcionário
+            int idCaixa = CaixaDAO.obterCaixaAberto(idFuncionario);
+            
+            if (idCaixa <= 0) { // Se não há caixa aberto
+                SwingUtilities.invokeLater(() -> {
+                    PainelCaixa painel = new PainelCaixa(this, true, idFuncionario);
+                    painel.setVisible(true);
+                    
+                    if (!painel.isOperacaoConcluida()) {
+                        // Se o usuário cancelou, fecha o sistema
+                        System.exit(0);
+                    } else {
+                        // Se abriu com sucesso, atualiza o idCaixa
+                        this.idCaixa = painel.getIdCaixa();
+                    }
+                });
+            }
+            // Se já tem caixa aberto (idCaixa > 0), não faz nada
+        } catch (SQLException ex) {
+            SwingUtilities.invokeLater(() -> {
+                JOptionPane.showMessageDialog(this,
+                    "Erro ao verificar caixa: " + ex.getMessage(),
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+                System.exit(1); // Fecha o sistema em caso de erro crítico
+            });
+        }
+    }).start();
+        
     
     }
    
@@ -132,36 +175,7 @@ private void abrirJanelaQuarto(Quarto quarto) {
     }
 }
 
-
- 
-
-    
-    private void JanelaQuarto(Quarto quarto) {
-    // Cria um JDialog para mostrar os detalhes
-    JDialog dialog = new JDialog(this, "Detalhes do Quarto " + quarto.getNumero(), true);
-    dialog.setSize(500, 400);
-    dialog.setLayout(new BorderLayout());
-    
-    // Painel de informações
-    JPanel panel = new JPanel(new GridLayout(0, 2, 10, 10));
-    panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-    
-    // Adiciona informações do quarto
-    panel.add(new JLabel("Número:"));
-    panel.add(new JLabel(quarto.getNumero()));
-    
-    panel.add(new JLabel("Tipo:"));
-    panel.add(new JLabel(quarto.getTipo()));
-    
-    panel.add(new JLabel("Status:"));
-    JLabel lblStatus = new JLabel(quarto.getStatus());
-    lblStatus.setForeground("ocupado".equalsIgnoreCase(quarto.getStatus()) ? Color.RED : Color.GREEN);
-    panel.add(lblStatus);
-    
-
-}
-
-       
+     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -325,10 +339,10 @@ private void abrirJanelaQuarto(Quarto quarto) {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        quartosPainel.setBackground(new java.awt.Color(153, 153, 255));
         quartosPainel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Quartos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 18))); // NOI18N
 
-        jScrollPane1.setBackground(new java.awt.Color(153, 153, 255));
+        jScrollPane1.setBackground(new java.awt.Color(242, 242, 242));
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         javax.swing.GroupLayout painelDosBotoesLayout = new javax.swing.GroupLayout(painelDosBotoes);
         painelDosBotoes.setLayout(painelDosBotoesLayout);
@@ -621,6 +635,11 @@ private void abrirJanelaQuarto(Quarto quarto) {
 
         Logoff.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/logoff.png"))); // NOI18N
         Logoff.setText("Logoff   |");
+        Logoff.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                LogoffMouseClicked(evt);
+            }
+        });
         jMenuBar1.add(Logoff);
 
         Sair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/saida.png"))); // NOI18N
@@ -688,8 +707,8 @@ private void abrirJanelaQuarto(Quarto quarto) {
 
     private void SairMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SairMouseClicked
         // TODO add your handling code here: 
-                JFrame frame = new JFrame("EXIT");
-        if(JOptionPane.showConfirmDialog(frame,"deseja sair mesmo?", "EXIT",
+                JFrame frame = new JFrame("Sair");
+        if(JOptionPane.showConfirmDialog(frame,"deseja sair mesmo?", "Sair",
                 JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION)
         {
             System.exit(0);
@@ -697,10 +716,10 @@ private void abrirJanelaQuarto(Quarto quarto) {
     }//GEN-LAST:event_SairMouseClicked
 
     private void VendasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VendasMouseClicked
-        // TODO add your handling code here:
-        Vendaprodutos venda = new Vendaprodutos();
-        teladefundo.add(venda);
-        venda.setVisible(true);
+    Vendaprodutos venda = new Vendaprodutos(idFuncionario);
+    teladefundo.add(venda);
+    venda.setVisible(true);  
+    
       
     }//GEN-LAST:event_VendasMouseClicked
 
@@ -714,20 +733,15 @@ private void abrirJanelaQuarto(Quarto quarto) {
         quartos.setSelected(true);
     } catch (Exception e) {
         e.printStackTrace();
-    }
-
-    
-        
+    }     
     }//GEN-LAST:event_casdastrarquartosActionPerformed
 
     private void CadastrarfuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadastrarfuncionarioActionPerformed
         // TODO add your handling code here:
-        
         cadfuncionarios funcionario = new cadfuncionarios ();
         teladefundo.add(funcionario);
-        funcionario.setVisible(true);
-                
-        
+       funcionario.setVisible(true);              
+      
     }//GEN-LAST:event_CadastrarfuncionarioActionPerformed
 
     private void CadastrarprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadastrarprodutosActionPerformed
@@ -742,9 +756,7 @@ private void abrirJanelaQuarto(Quarto quarto) {
         cadserviços serviços = new cadserviços();
         teladefundo.add(serviços);
         serviços.setVisible(true);
-        
-        
-        
+       
     }//GEN-LAST:event_CadastrarserviçosActionPerformed
 
     private void ConsultarhospedeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarhospedeActionPerformed
@@ -752,9 +764,7 @@ private void abrirJanelaQuarto(Quarto quarto) {
         conshospedes consultarh = new conshospedes();
         teladefundo.add(consultarh);
         consultarh.setVisible(true);
-        
-        
-        
+       
     }//GEN-LAST:event_ConsultarhospedeActionPerformed
 
     private void ConsultarquartosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarquartosActionPerformed
@@ -763,7 +773,6 @@ private void abrirJanelaQuarto(Quarto quarto) {
         teladefundo.add(consultarq);
         consultarq.setVisible(true);
 
-
     }//GEN-LAST:event_ConsultarquartosActionPerformed
 
     private void ConsultarfuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarfuncionarioActionPerformed
@@ -771,16 +780,11 @@ private void abrirJanelaQuarto(Quarto quarto) {
         consfuncionario consultarf = new consfuncionario();
         teladefundo.add(consultarf);
         consultarf.setVisible(true);
-        
-        
-
-
-
+       
     }//GEN-LAST:event_ConsultarfuncionarioActionPerformed
 
     private void ConsultarprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarprodutosActionPerformed
         // TODO add your handling code here:
-      
         consprodutos consulta = new consprodutos();
         teladefundo.add(consulta);
         consulta.setVisible(true);
@@ -789,25 +793,56 @@ private void abrirJanelaQuarto(Quarto quarto) {
 
     private void ConsultarServiçosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarServiçosActionPerformed
         // TODO add your handling code here:
-
         consserviços consultars = new consserviços();
         teladefundo.add(consultars);
         consultars.setVisible(true);
 
-
     }//GEN-LAST:event_ConsultarServiçosActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-        
+        // TODO add your handling code here: 
         Conf c = new Conf();
         teladefundo.add(c);
         c.setVisible(true);
         
-        
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void LogoffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LogoffMouseClicked
+    int confirm = JOptionPane.showConfirmDialog(
+        this, 
+        "Deseja realmente fazer logoff?", 
+        "Confirmação", 
+        JOptionPane.YES_NO_OPTION);
     
-    
+    if (confirm == JOptionPane.YES_OPTION) {
+        try {
+            // Verificar se há caixa aberto
+            int idCaixa = CaixaDAO.obterCaixaAberto(idFuncionario);
+            
+            if (idCaixa > 0) {
+                PainelCaixa painelFechamento = new PainelCaixa(this, false, idFuncionario);
+                painelFechamento.setVisible(true);
+                
+                if (!painelFechamento.isOperacaoConcluida()) {
+                    return; // Usuário cancelou o fechamento
+                }
+            }
+            
+            this.dispose();
+            new TelaLogin().setVisible(true);
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, 
+                "Erro ao acessar o banco de dados: " + ex.getMessage(), 
+                "Erro", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+         System.out.println("Mouse clicado - Iniciando logoff");
+         System.out.println("ID Funcionário: " + idFuncionario);
+         System.out.println("Evento de mouse capturado");
+    }//GEN-LAST:event_LogoffMouseClicked
+        
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Cadastrarfuncionario;
     private javax.swing.JMenuItem Cadastrarhospede;
@@ -886,7 +921,7 @@ private void abrirJanelaQuarto(Quarto quarto) {
     }
 
    public void atualizarBotaoQuarto(Quarto quarto) {
-    for (Component comp : painelDosBotoes.getComponents()) {
+   for (Component comp : painelDosBotoes.getComponents()) {
         if (comp instanceof JButton) {
             JButton btn = (JButton) comp;
             if (btn.getText().equals(quarto.getNumero())) {
@@ -894,18 +929,22 @@ private void abrirJanelaQuarto(Quarto quarto) {
                     btn.setBackground(Color.RED);
                     btn.setIcon(new ImageIcon(getClass().getResource("/imagens/porta_vermelha.png")));
                     
-                    // Obter informações do hóspede do banco
+                    // Mova a operação de banco de dados para um bloco try-catch separado
                     try {
                         Hospede hospede = HospedeDAO.buscarPorQuarto(quarto.getIdQuarto());
                         if (hospede != null) {
                             btn.setToolTipText("Ocupado por: " + hospede.getNome() + 
-                                             "\nCPF: " + hospede.getCpfHospede()+
-                                             "\nTelefone: " + hospede.getTelefone()+
+                                             "\nCPF: " + hospede.getCpfHospede() +
+                                             "\nTelefone: " + hospede.getTelefone() +
                                              "\nCheck-in: " + quarto.getCheckIn() +
                                              "\nCheck-out: " + quarto.getCheckOut());   
                         }
                     } catch (SQLException ex) {
                         ex.printStackTrace();
+                        // Ou mostre uma mensagem de erro ao usuário
+                        JOptionPane.showMessageDialog(this,
+                            "Erro ao carregar dados do hóspede: " + ex.getMessage(),
+                            "Erro", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
                     btn.setBackground(Color.GREEN);
@@ -919,5 +958,14 @@ private void abrirJanelaQuarto(Quarto quarto) {
     painelDosBotoes.revalidate();
     painelDosBotoes.repaint();
 }
+
+    private void gerarRelatorioCaixa(int idCaixa) throws SQLException {
+            // Exemplo simples:
+            String resumo = CaixaDAO.gerarResumoCaixa(idCaixa);
+            JOptionPane.showMessageDialog(this, resumo, "Resumo do Caixa", JOptionPane.INFORMATION_MESSAGE);
+            
+            // Aqui você pode adicionar código para imprimir o relatório
+    
+    }
     
     }

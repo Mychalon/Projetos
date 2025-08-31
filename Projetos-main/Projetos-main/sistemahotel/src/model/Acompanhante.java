@@ -7,10 +7,27 @@ public class Acompanhante {
     private String CPF;
     private int idhospede;
     private int idQuarto;
+    private boolean extra; 
+    private double valorExtra;
 
     // Construtor
     public Acompanhante() {}
 
+    public boolean isExtra() {
+        return extra;
+    }
+
+    public void setExtra(boolean extra) {
+        this.extra = extra;
+    }
+
+    public double getValorExtra() {
+        return valorExtra;
+    }
+
+    public void setValorExtra(double valorExtra) {
+        this.valorExtra = valorExtra;
+    }
     // Getters e Setters
     public int getId() { 
         return idacompanhante; 
@@ -64,4 +81,6 @@ public class Acompanhante {
     public void setidhospede(int idHospede) {
         this.idhospede = idHospede;
     }
+
+    
 }

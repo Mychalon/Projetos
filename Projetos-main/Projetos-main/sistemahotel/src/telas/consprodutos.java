@@ -3,19 +3,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
 package telas;
+import java.sql.Connection;
 import dao.ProdutoDAO;
 import model.Produto;
 import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
 import java.util.List;
+import javax.swing.JDialog;
 
 
 public class consprodutos extends javax.swing.JInternalFrame {
     private ArrayList<Produto> listaProdutos;
     private ProdutoDAO produtoDAO; // Adicionar referência ao DAO
-
+  
     public consprodutos() {
         initComponents();
         try {
@@ -27,6 +30,17 @@ public class consprodutos extends javax.swing.JInternalFrame {
         }
     }
 
+    public consprodutos(Connection conexao) {
+    initComponents();
+    try {
+        produtoDAO = new ProdutoDAO(conexao); // Passa a conexão
+        listaProdutos = (ArrayList<Produto>) produtoDAO.buscarTodos();
+        carregarProdutosNaTabela();
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Erro ao conectar com o banco de dados: " + ex.getMessage());
+    }
+}
+    
 private void carregarProdutosNaTabela() {
     DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
     modelo.setRowCount(0);
@@ -295,5 +309,22 @@ jTextField1.setText(""); // Limpa o campo de pesquisa
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
+
+    public Produto getProdutoSelecionado() {
+      int linha = jTable1.getSelectedRow();
+    if (linha >= 0) {
+        String codigo = (String) jTable1.getValueAt(linha, 0);
+        try {
+            return produtoDAO.buscarPorCodigo(codigo);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    return null;
+  }
+
+    void setLocationRelativeTo(JDialog parentDialog) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
 }

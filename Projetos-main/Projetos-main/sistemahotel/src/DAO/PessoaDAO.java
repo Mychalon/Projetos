@@ -48,6 +48,23 @@ public class PessoaDAO {
         }
     }
     
+    public static int obterIdFuncionario(String login, String senha) throws SQLException {
+    String sql = "SELECT id FROM pessoa WHERE nome = ? AND senha = ?";
+    
+    try (Connection conn = ConexaoBD.getConexao();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setString(1, login);
+        stmt.setString(2, senha);
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        }
+    }
+    return -1; // Retorna -1 se não encontrar
+}
     // Método para obter o tipo de usuário
     public static String obterTipoUsuario(String nome, String senha) {
         String sql = "SELECT tipo FROM pessoa WHERE nome = ? AND senha = ?";
@@ -70,4 +87,6 @@ public class PessoaDAO {
             return null;
         }
     }
+
+   
 }

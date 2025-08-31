@@ -5,7 +5,10 @@
  */
 package telas;
 
+import dao.CaixaDAO;
 import dao.PessoaDAO;
+import java.awt.Component;
+import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -15,12 +18,18 @@ import javax.swing.JOptionPane;
  */
 public class TelaLogin extends javax.swing.JFrame {
 
+
+    
     /**
      * Creates new form TelaLogin
      */
     public TelaLogin() {
+        
         initComponents();
-    }
+          
+        
+    
+       }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,8 +46,14 @@ public class TelaLogin extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        try {
+            btnSair =(javax.swing.JButton)java.beans.Beans.instantiate(getClass().getClassLoader(), "telas.TelaLogin_btnSair");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+        btnEntrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("App Hotel");
@@ -66,17 +81,21 @@ public class TelaLogin extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Sair");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSair.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSairActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Entrar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnEntrar.setBackground(new java.awt.Color(0, 0, 204));
+        btnEntrar.setForeground(new java.awt.Color(255, 255, 255));
+        btnEntrar.setText("Entrar");
+        btnEntrar.setBorder(null);
+        btnEntrar.setBorderPainted(false);
+        btnEntrar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnEntrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnEntrarActionPerformed(evt);
             }
         });
 
@@ -87,20 +106,21 @@ public class TelaLogin extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(21, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(btnSair, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(144, 144, 144)))
-                .addContainerGap())
+                        .addGap(150, 150, 150))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,9 +136,9 @@ public class TelaLogin extends javax.swing.JFrame {
                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 48, Short.MAX_VALUE))
+                    .addComponent(btnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 45, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -138,22 +158,26 @@ public class TelaLogin extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
     private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
         // TODO add your handling code here:
-         jButton2ActionPerformed(evt); // Simular clique no botão Entrar
+         btnEntrarActionPerformed(evt); // Simular clique no botão Entrar
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
           jPasswordField1.requestFocus(); // Mover o foco para o campo de senha
+          System.out.println("Componentes no painel:");
+for (Component c : jPanel1.getComponents()) {
+    System.out.println(c.getClass().getName() + " - " + c);
+}
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       // Obter os valores dos campos
-    String login = jTextField1.getText().trim();
+    private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
+ String login = jTextField1.getText().trim();
     String senha = new String(jPasswordField1.getPassword()).trim();
     
-    // Verificar se os campos estão preenchidos
     if (login.isEmpty() || senha.isEmpty()) {
         JOptionPane.showMessageDialog(this, 
             "Por favor, preencha todos os campos!", 
@@ -162,40 +186,73 @@ public class TelaLogin extends javax.swing.JFrame {
         return;
     }
     
-    // Verificar as credenciais no banco de dados
-    boolean credenciaisValidas = PessoaDAO.verificarLogin(login, senha);
-    
-    if (credenciaisValidas) {
-        // Se as credenciais estiverem corretas, obter tipo de usuário e abrir a tela principal
-        String tipoUsuario = PessoaDAO.obterTipoUsuario(login, senha);
-        setVisible(false);
-        Tela_principal tela = new Tela_principal(login, tipoUsuario);
-        tela.setVisible(true);
-    } else {
-        // Se as credenciais estiverem incorretas, mostrar mensagem de erro
-        JOptionPane.showMessageDialog(this, 
-            "Login ou senha incorretos!", 
-            "Erro de Login", 
-            JOptionPane.ERROR_MESSAGE);
+    try {
+        boolean credenciaisValidas = PessoaDAO.verificarLogin(login, senha);
         
-        // Limpar o campo de senha
-        jPasswordField1.setText("");
-        
-        // Colocar o foco no campo de login
-        jTextField1.requestFocus();
+        if (credenciaisValidas) {
+            String tipoUsuario = PessoaDAO.obterTipoUsuario(login, senha);
+            int idFuncionario = PessoaDAO.obterIdFuncionario(login, senha);
+            
+            if (idFuncionario == -1) {
+                JOptionPane.showMessageDialog(this,
+                    "Erro ao obter ID do funcionário",
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Verificação simplificada do caixa
+            int idCaixa = CaixaDAO.obterCaixaAberto(idFuncionario);
+            if (idCaixa <= 0) {
+                int option = JOptionPane.showConfirmDialog(this,
+                    "Nenhum caixa aberto. Deseja abrir um caixa agora?",
+                    "Atenção", JOptionPane.YES_NO_OPTION);
+                
+                if (option == JOptionPane.YES_OPTION) {
+                    PainelCaixa painel = new PainelCaixa(this, true, idFuncionario);
+                    painel.setVisible(true);
+                    
+                    if (!painel.isOperacaoConcluida()) {
+                        return; // Usuário cancelou
+                    }
+                    idCaixa = painel.getIdCaixa();
+                } else {
+                    return; // Usuário escolheu não abrir caixa
+                }
+            }
+            
+            setVisible(false);
+            Tela_principal tela = new Tela_principal(login, tipoUsuario, idFuncionario);
+            tela.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, 
+                "Login ou senha incorretos!", 
+                "Erro de Login", 
+                JOptionPane.ERROR_MESSAGE);
+            jPasswordField1.setText("");
+            jTextField1.requestFocus();
+        }
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this,
+            "Erro ao acessar o banco de dados: " + ex.getMessage(),
+            "Erro", JOptionPane.ERROR_MESSAGE);
     }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnEntrarActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
         // TODO add your handling code here:
-        JFrame frame = new JFrame("EXIT");
-        if(JOptionPane.showConfirmDialog(frame,"deseja sair mesmo?", "EXIT",
+
+        JFrame frame = new JFrame("Sair");
+        if(JOptionPane.showConfirmDialog(frame,"deseja sair mesmo?", "Sair",
                 JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION)
         {
             System.exit(0);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnSairActionPerformed
 
+    
+    
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -226,8 +283,8 @@ public class TelaLogin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnEntrar;
+    private javax.swing.JButton btnSair;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

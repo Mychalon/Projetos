@@ -51,7 +51,22 @@ public class AcompanhanteDAO {
 }
     
     
+    public boolean salvarextra(Acompanhante acompanhante) throws SQLException {
+    String sql = "INSERT INTO acompanhantes (nome, cpf, telefone, hospede_id, id_quarto, extra, valor_extra) " +
+                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
     
+    try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+        stmt.setString(1, acompanhante.getNome());
+        stmt.setString(2, acompanhante.getCpfacompanhante());
+        stmt.setString(3, acompanhante.getTelefone());
+        stmt.setInt(4, acompanhante.getIdhospede());
+        stmt.setInt(5, acompanhante.getIdQuarto());
+        stmt.setBoolean(6, acompanhante.isExtra());
+        stmt.setDouble(7, acompanhante.getValorExtra());
+        
+        return stmt.executeUpdate() > 0;
+    }
+}
     
     public int salvar(Acompanhante acompanhante) throws SQLException {
     String sql = "INSERT INTO acompanhantes (nome, cpf, telefone, hospede_id, id_quarto) " +
@@ -90,6 +105,56 @@ public class AcompanhanteDAO {
     }
     return false;
     }
+    
+    
+    public Acompanhante buscarPorCPF(String cpf) throws SQLException {
+    String sql = "SELECT * FROM acompanhantes WHERE cpf = ?";
+    
+    try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+        stmt.setString(1, cpf);
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                Acompanhante a = new Acompanhante();
+                a.setId(rs.getInt("id"));
+                a.setNome(rs.getString("nome"));
+                a.setCpfacompanhante(rs.getString("cpf"));
+                a.setTelefone(rs.getString("telefone"));
+                a.setIdhospede(rs.getInt("hospede_id"));
+                a.setIdQuarto(rs.getInt("id_quarto"));
+                a.setExtra(rs.getBoolean("extra"));
+                a.setValorExtra(rs.getDouble("valor_extra"));
+                return a;
+            }
+        }
+    }
+    return null;
+}
+    public static List<Acompanhante> buscarPorHospedagemAtual(int idHospede, int idQuarto) throws SQLException {
+    List<Acompanhante> acompanhantes = new ArrayList<>();
+    String sql = "SELECT * FROM acompanhantes WHERE hospede_id = ? AND id_quarto = ?";
+    
+    try (Connection conexao = ConexaoBD.getConexao();
+         PreparedStatement stmt = conexao.prepareStatement(sql)) {
+        
+        stmt.setInt(1, idHospede);
+        stmt.setInt(2, idQuarto);
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Acompanhante a = new Acompanhante();
+                a.setId(rs.getInt("id"));
+                a.setNome(rs.getString("nome"));
+                a.setCpfacompanhante(rs.getString("cpf"));
+                a.setTelefone(rs.getString("telefone"));
+                a.setIdhospede(rs.getInt("hospede_id"));
+                a.setIdQuarto(rs.getInt("id_quarto"));
+                acompanhantes.add(a);
+            }
+        }
+    }
+    return acompanhantes;
+}
 }
 
      

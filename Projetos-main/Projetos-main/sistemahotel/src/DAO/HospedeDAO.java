@@ -11,6 +11,10 @@ import model.Hospede;  // Import adicionado
 
 public class HospedeDAO {
 
+    public static void setStatus(String checkout) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
  
 
     
@@ -20,62 +24,65 @@ public class HospedeDAO {
         this.conexao = conexao;
     }
     
-       public int salvar(Hospede hospede) throws SQLException {
-           
-         // Primeiro verifica se o CPF já existe
-    if (existeHospedePorCPF(hospede.getCpfHospede())) {
-        throw new SQLException("Já existe um hóspede cadastrado com este CPF");
+  public int salvar(Hospede hospede) throws SQLException {
+    Hospede existente = buscarPorCPF(hospede.getCpfHospede());
+    if (existente != null) {
+        return -2; // Já existe
     }
-
-        String sql = "INSERT INTO hospede (nome, cpf, telefone, email, check_in, check_out, id_quarto, placa) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    
+    String sql = "INSERT INTO hospede (nome, cpf, telefone, email, id_quarto, placa, status) " +
+               "VALUES (?, ?, ?, ?, ?, ?, ?)";
+    
+    try (PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        stmt.setString(1, hospede.getNome());
+        stmt.setString(2, hospede.getCpfHospede());
+        stmt.setString(3, hospede.getTelefone());
+        stmt.setString(4, hospede.getEmail() != null ? hospede.getEmail() : "");
+        stmt.setInt(5, hospede.getIdQuarto());
+        stmt.setString(6, hospede.getPlacaVeiculo() != null ? hospede.getPlacaVeiculo() : "");
+        stmt.setString(7, "Hospedado"); // STATUS padrão
         
-        try (PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, hospede.getNome());
-            stmt.setString(2, hospede.getCpfHospede());
-            stmt.setString(3, hospede.getTelefone());
-            stmt.setString(4, hospede.getEmail());
-            
-            // Usar java.sql.Timestamp corretamente
-            stmt.setTimestamp(5, new java.sql.Timestamp(hospede.getCheckIn().getTime()));
-            
-            if (hospede.getCheckOut() != null) {
-                stmt.setTimestamp(6, new java.sql.Timestamp(hospede.getCheckOut().getTime()));
-            } else {
-                stmt.setNull(6, java.sql.Types.TIMESTAMP);
-            }
-            
-            stmt.setInt(7, hospede.getIdQuarto());
-            stmt.setString(8, hospede.getPlacaVeiculo());
-            
-            stmt.executeUpdate();
-            
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
+        stmt.executeUpdate();
+        
+        try (ResultSet rs = stmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                return rs.getInt(1);
             }
         }
-        return -1;
     }
-
-    public void atualizarCheckout(Hospede hospede) throws SQLException {
-        String sql = "UPDATE hospede SET check_out = ? WHERE id = ?";
+    return -1;
+}
+       //método para buscar por CPF
+public Hospede buscarPorCPF(String cpf) throws SQLException {
+    String sql = "SELECT * FROM hospede WHERE cpf = ?";
+    
+    try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+        stmt.setString(1, cpf);
         
-        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
-            if (hospede.getCheckOut() != null) {
-                stmt.setTimestamp(1, new java.sql.Timestamp(hospede.getCheckOut().getTime()));
-            } else {
-                stmt.setNull(1, java.sql.Types.TIMESTAMP);
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                Hospede hospede = new Hospede();
+                hospede.setIdhospede(rs.getInt("id"));
+                hospede.setNome(rs.getString("nome"));
+                hospede.setCpfHospede(rs.getString("cpf"));
+                hospede.setTelefone(rs.getString("telefone"));
+                hospede.setEmail(rs.getString("email"));
+                hospede.setPlacaVeiculo(rs.getString("placa"));
+                hospede.setIdQuarto(rs.getInt("id_quarto"));
+                hospede.setStatus(rs.getString("status")); // Carrega o status
+                
+                return hospede;
             }
-            stmt.setInt(2, hospede.getIdhospede());
-            stmt.executeUpdate();
         }
     }
+    return null;
+}
 
     
-    public static Hospede buscarPorQuarto(int idQuarto) throws SQLException {
-    String sql = "SELECT * FROM hospede WHERE id_quarto = ? AND check_out IS NULL";
+
+    
+     public static Hospede buscarPorQuarto(int idQuarto) throws SQLException {
+      String sql = "SELECT * FROM hospede WHERE id_quarto = ? AND status = 'Hospedado'";
     
     try (Connection conexao = ConexaoBD.getConexao();
          PreparedStatement stmt = conexao.prepareStatement(sql)) {
@@ -91,9 +98,8 @@ public class HospedeDAO {
                 hospede.setTelefone(rs.getString("telefone"));
                 hospede.setEmail(rs.getString("email"));
                 hospede.setIdQuarto(rs.getInt("id_quarto"));
-                hospede.setCheckIn(rs.getTimestamp("check_in"));
-                hospede.setCheckOut(rs.getTimestamp("check_out"));
-                hospede.setPlacaVeiculo(rs.getString("placa")); // Carrega a placa
+                hospede.setPlacaVeiculo(rs.getString("placa"));
+                hospede.setStatus(rs.getString("status")); // Carrega o status
                 
                 return hospede;
             }
@@ -137,9 +143,19 @@ public class HospedeDAO {
         return hospedes;
     }
 
-    public void atualizarStatusHospede(int idHospedagem, String checkout) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   
+    
+    
+    public void atualizarStatus(int idHospede, String status) throws SQLException {
+        String sql = "UPDATE hospede SET status = ? WHERE id = ?";
+        
+        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, status);
+            stmt.setInt(2, idHospede);
+            stmt.executeUpdate();
+        }
     }
+
 
     public void atualizar(Hospede hospede) throws SQLException {
     String sql = "UPDATE hospede SET nome=?, cpf=?, telefone=?, email=?, placa=? WHERE id=?";
@@ -172,15 +188,47 @@ public class HospedeDAO {
                 hospede.setTelefone(rs.getString("telefone"));
                 hospede.setPlacaVeiculo(rs.getString("placa"));
                 hospede.setIdQuarto(rs.getInt("id_quarto"));
-                hospede.setCheckIn(rs.getDate("check_in"));
-                hospede.setCheckOut(rs.getDate("check_out"));
+               
                 return hospede;
             }
         }
     }
     return null;
  }
- 
+ public static List<Hospede> buscarPorStatus(String status) throws SQLException {
+    List<Hospede> hospedes = new ArrayList<>();
+    String sql = "SELECT * FROM hospede WHERE status = ?";
+    
+    try (Connection conexao = ConexaoBD.getConexao();
+         PreparedStatement stmt = conexao.prepareStatement(sql)) {
+        
+        stmt.setString(1, status);
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Hospede hospede = new Hospede();
+                hospede.setIdhospede(rs.getInt("id"));
+                hospede.setNome(rs.getString("nome"));
+                hospede.setCpfHospede(rs.getString("cpf"));
+                hospede.setTelefone(rs.getString("telefone"));
+                hospede.setEmail(rs.getString("email"));
+                hospede.setIdQuarto(rs.getInt("id_quarto"));
+                hospede.setPlacaVeiculo(rs.getString("placa"));
+                hospede.setStatus(rs.getString("status")); // Carrega o status
+                
+                hospedes.add(hospede);
+            }
+        }
+    }
+    return hospedes;
+}
+
+    public void atualizarStatusHospede(int idHospedagem, String checkout) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    
+    
 }
 
     

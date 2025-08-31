@@ -18,25 +18,22 @@ public class cadquarto extends javax.swing.JInternalFrame {
     
 
     private javax.swing.JPanel painelDosBotoes; // ADICIONE ESTA LINHA
-    private javax.swing.JRadioButton solteiro;
-    private javax.swing.JRadioButton duplo;
-    private javax.swing.JRadioButton triplo;
-    private javax.swing.JRadioButton quadruplo;
-    private javax.swing.JTextField nomeQuarto;
+;
     
     cadquarto() {
        initComponents();}
    
     // Métodos para acessar os dados do formulário
     public String getNomeQuarto() {
-        return jTextField1.getText();
+        return nomeQuarto.getText();
     }
     
     public String getTipoQuarto() {
-        if (jRadioButton1.isSelected()) return "Solteiro";
-        if (jRadioButton2.isSelected()) return "Duplo";
-        if (jRadioButton3.isSelected()) return "Triplo";
-        if (jRadioButton4.isSelected()) return "Quadruplo";
+        if (solteiro.isSelected()) return "Solteiro";
+        if (duplo.isSelected()) return "Duplo";
+        if (triplo.isSelected()) return "Triplo";
+        if (quadruplo.isSelected()) return "Quadruplo";
+        if (Casal.isSelected()) return "Casal";
         return "";
     }
     
@@ -49,13 +46,7 @@ public class cadquarto extends javax.swing.JInternalFrame {
      
     initComponents(); // Inicializa os componentes da interface
     
-    // Inicializa os componentes (ajuste conforme seus nomes reais)
-        solteiro = jRadioButton1;
-        duplo = jRadioButton2;
-        triplo = jRadioButton3;
-        quadruplo = jRadioButton4;
-        nomeQuarto = jTextField1;
-
+    
 
      }
 
@@ -69,14 +60,15 @@ public class cadquarto extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        Cadquart = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        nomeQuarto = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
+        solteiro = new javax.swing.JRadioButton();
+        duplo = new javax.swing.JRadioButton();
+        triplo = new javax.swing.JRadioButton();
+        quadruplo = new javax.swing.JRadioButton();
+        Casal = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
         jRadioButton5 = new javax.swing.JRadioButton();
         jRadioButton6 = new javax.swing.JRadioButton();
@@ -97,10 +89,10 @@ public class cadquarto extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton2.setText("Cadastrar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        Cadquart.setText("Cadastrar");
+        Cadquart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                CadquartActionPerformed(evt);
             }
         });
 
@@ -112,25 +104,27 @@ public class cadquarto extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1)
+                .addComponent(nomeQuarto)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(nomeQuarto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("TIPO DE QUARTO"));
 
-        jRadioButton1.setText("Solteiro");
+        solteiro.setText("Solteiro");
 
-        jRadioButton2.setText("Duplo");
+        duplo.setText("Duplo");
 
-        jRadioButton3.setText("Triplo");
+        triplo.setText("Triplo");
 
-        jRadioButton4.setText("Quadruplo");
+        quadruplo.setText("Quadruplo");
+
+        Casal.setText("Casal");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -138,13 +132,15 @@ public class cadquarto extends javax.swing.JInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jRadioButton1)
+                .addComponent(solteiro)
                 .addGap(18, 18, 18)
-                .addComponent(jRadioButton2)
+                .addComponent(duplo)
                 .addGap(18, 18, 18)
-                .addComponent(jRadioButton3)
+                .addComponent(triplo)
                 .addGap(18, 18, 18)
-                .addComponent(jRadioButton4)
+                .addComponent(quadruplo)
+                .addGap(18, 18, 18)
+                .addComponent(Casal)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -152,10 +148,11 @@ public class cadquarto extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jRadioButton4))
+                    .addComponent(solteiro)
+                    .addComponent(duplo)
+                    .addComponent(triplo)
+                    .addComponent(quadruplo)
+                    .addComponent(Casal))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -179,7 +176,7 @@ public class cadquarto extends javax.swing.JInternalFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jRadioButton5)
                     .addComponent(jRadioButton6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jRadioButton7)
                     .addComponent(jRadioButton8))
@@ -238,7 +235,7 @@ public class cadquarto extends javax.swing.JInternalFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2))
+                        .addComponent(Cadquart))
                     .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(12, 12, 12))
         );
@@ -253,14 +250,14 @@ public class cadquarto extends javax.swing.JInternalFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(Cadquart))
                 .addContainerGap())
         );
 
-        setBounds(200, 100, 405, 390);
+        setBounds(200, 100, 414, 390);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
@@ -273,14 +270,18 @@ public class cadquarto extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       
-       // Verifica se o painelDosBotoes foi inicializado
+    
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void CadquartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadquartActionPerformed
+        // TODO add your handling code here:
+         // Verifica se o painelDosBotoes foi inicializado
     if (painelDosBotoes == null) {
         JOptionPane.showMessageDialog(this, "Erro: Painel de botões não inicializado!", "Erro", JOptionPane.ERROR_MESSAGE);
         return;
     }
     
-    String nomeQuarto = jTextField1.getText();
+    String nomeQuarto = this.nomeQuarto.getText();
     if (nomeQuarto.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Preencha o nome do quarto!", "Erro", JOptionPane.ERROR_MESSAGE);
         return;
@@ -288,8 +289,9 @@ public class cadquarto extends javax.swing.JInternalFrame {
         
     
      // Verifica se pelo menos um tipo de quarto foi selecionado
-        if (!jRadioButton1.isSelected() && !jRadioButton2.isSelected() && 
-            !jRadioButton3.isSelected() && !jRadioButton4.isSelected()) {
+        if (!solteiro.isSelected() && !duplo.isSelected() && 
+            !triplo.isSelected() && !quadruplo.isSelected()&& 
+            !Casal.isSelected()) {
             JOptionPane.showMessageDialog(this, "Selecione o tipo de quarto!", 
                 "Erro", JOptionPane.ERROR_MESSAGE);
             return;
@@ -325,35 +327,35 @@ public class cadquarto extends javax.swing.JInternalFrame {
     painelDosBotoes.revalidate();
     painelDosBotoes.repaint();
     
-    jTextField1.setText("");
+    this.nomeQuarto.setText("");
     
     JOptionPane.showMessageDialog(this, "Quarto cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
   
      } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Erro ao cadastrar quarto no banco de dados: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
     }
-     
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_CadquartActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Cadquart;
+    private javax.swing.JRadioButton Casal;
+    private javax.swing.JRadioButton duplo;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
     private javax.swing.JRadioButton jRadioButton5;
     private javax.swing.JRadioButton jRadioButton6;
     private javax.swing.JRadioButton jRadioButton7;
     private javax.swing.JRadioButton jRadioButton8;
     private javax.swing.JRadioButton jRadioButton9;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField nomeQuarto;
+    private javax.swing.JRadioButton quadruplo;
+    private javax.swing.JRadioButton solteiro;
+    private javax.swing.JRadioButton triplo;
     // End of variables declaration//GEN-END:variables
 
     private static class JanelaDetalhesQuarto {

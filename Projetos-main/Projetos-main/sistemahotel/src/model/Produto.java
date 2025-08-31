@@ -37,5 +37,9 @@ public class Produto {
     public void setQuantidade(int quantidade) { this.quantidade = quantidade; }
     public double getPreco() { return preco; }
     public void setPreco(double preco) { this.preco = preco; }
+
+    public Object getDescricao() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

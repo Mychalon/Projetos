@@ -75,6 +75,8 @@ public class ProdutoDAO {
             System.err.println("Erro ao fechar recursos: " + e.getMessage());
         }
     }}
+
+    public ProdutoDAO(Connection conexao) {}
     
     // Busca produto por nome aproximado
    
@@ -98,17 +100,19 @@ public class ProdutoDAO {
 
 
     // Atualiza estoque
-    public void atualizarEstoque(int produtoId, int quantidade) throws SQLException {
-        String sql = "UPDATE produto SET estoque = estoque + ? WHERE id = ?";
+    public boolean atualizarEstoque(int produtoId, int quantidade) throws SQLException {
+        String sql = "UPDATE produto SET estoque = ? WHERE id = ?";
         
         try (Connection conn = ConexaoBD.getConexao();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) { 
             
             stmt.setInt(1, quantidade);
             stmt.setInt(2, produtoId);
-            stmt.executeUpdate();
+            return stmt.executeUpdate() > 0;
         }
     }
+    
+    
     
     public static boolean atualizarProduto(Produto produto) throws SQLException {
      String sql = "UPDATE produto SET nome = ?, codigo = ?, estoque = ?, preco = ? WHERE id = ?";
@@ -129,7 +133,7 @@ public class ProdutoDAO {
     
     
     private Produto criarProduto(ResultSet rs) throws SQLException {
-       Produto produto = new Produto();
+    Produto produto = new Produto();
     produto.setId(rs.getInt("id"));
     produto.setNome(rs.getString("nome"));
     produto.setCodigo(rs.getString("codigo"));  // Adicionado

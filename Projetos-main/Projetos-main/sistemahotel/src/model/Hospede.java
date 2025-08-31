@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Date;
-
 public class Hospede {
     private int idhospede;
     private int idQuarto;
@@ -9,15 +7,13 @@ public class Hospede {
     private String cpf;
     private String telefone;
     private String email;
-    private Date checkIn;
-    private Date checkOut;
+    private String status; // "Hospedado" ou "Saída"
     private int quartoId;
     private String placaVeiculo;
 
     // Construtor
     public Hospede() {
-     this.checkIn = new Date(); // Inicializa com data atual por padrão
-  
+     
         
     }
     
@@ -28,25 +24,20 @@ public class Hospede {
     public String getPlacaVeiculo() {
         return placaVeiculo;
     }
-    
-    public Date getCheckIn() {
-        if (this.checkIn == null) {
-            this.checkIn = new Date();
-        }
-        return checkIn;
-    }
-    
-
-    public Date getCheckOut() {
-        // Pode retornar null se não houver checkout
-        return checkOut;
-    }
-
+        
     public void setPlacaVeiculo(String placaVeiculo) {
         this.placaVeiculo = placaVeiculo;
     }
     
     // Getters e Setters
+     public String getStatus() {
+        return status;
+    }
+    
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
     public int getIdhospede() {
         return idhospede;
     }
@@ -93,16 +84,6 @@ public class Hospede {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    
-
-    public void setCheckIn(Date checkIn) {
-        this.checkIn = checkIn;
-    }
-
-     public void setCheckOut(Date checkOut) {
-        this.checkOut = checkOut;
     }
 
     public int getQuartoId() {

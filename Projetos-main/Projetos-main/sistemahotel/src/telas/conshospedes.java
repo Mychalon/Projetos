@@ -12,8 +12,11 @@ import javax.swing.table.DefaultTableModel;
 import model.Hospede;
 import model.Acompanhante;
 import dao.ConexaoBD;
+import java.awt.Color;
+import java.awt.Component;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -64,6 +67,30 @@ public class conshospedes extends javax.swing.JInternalFrame {
                 placa = "Não informada";
             }
             
+            
+            
+            // Adicione um renderizador de células para colorir as linhas
+jTable1.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, 
+            boolean isSelected, boolean hasFocus, int row, int column) {
+        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        
+        if (!isSelected) {
+            String status = (String) table.getModel().getValueAt(row, 7); // Coluna Status
+            
+            if ("Saída".equals(status)) {
+                c.setBackground(new Color(240, 240, 240)); // Cinza claro
+                c.setForeground(new Color(100, 100, 100)); // Cinza escuro
+            } else {
+                c.setBackground(Color.WHITE);
+                c.setForeground(Color.BLACK);
+            }
+        }
+        return c;
+    }
+});
+
             // Adiciona linha na tabela
             model.addRow(new Object[]{
                 hospede.getNome(),
@@ -72,7 +99,8 @@ public class conshospedes extends javax.swing.JInternalFrame {
                 placa, // Campo da placa
                 nomesAcompanhantes,
                 "Quarto " + hospede.getIdQuarto(),
-                acompanhantes.size()
+                acompanhantes.size(),
+                hospede.getStatus() // Adiciona o status
             });
         }
     } catch (SQLException ex) {
@@ -108,22 +136,22 @@ public class conshospedes extends javax.swing.JInternalFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nome", "CPF", "Telefone", "Placa Veiculo", "Acompanhantes", "Quarto", "Qnt Acomp."
+                "Nome", "CPF", "Telefone", "Placa Veiculo", "Acompanhantes", "Quarto", "Qnt Acomp.", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -247,13 +275,17 @@ public class conshospedes extends javax.swing.JInternalFrame {
     String filtro = (String) jComboBoxFiltro.getSelectedItem();
     
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-    model.setRowCount(0); // Limpa a tabela
+    model.setRowCount(0);
     
     try (Connection conexao = ConexaoBD.getConexao()) {
         HospedeDAO hospedeDAO = new HospedeDAO(conexao);
         List<Hospede> hospedes = hospedeDAO.listarTodos();
         
         for (Hospede hospede : hospedes) {
+            // Adicionar filtro por status se necessário
+            if (filtro.equals("Status") && !hospede.getStatus().toLowerCase().contains(termo)) {
+                continue;
+            }
             // Verifica se o hóspede corresponde ao critério de pesquisa
             boolean matches = false;
             
@@ -301,7 +333,8 @@ public class conshospedes extends javax.swing.JInternalFrame {
                     hospede.getPlacaVeiculo()!= null ? hospede.getPlacaVeiculo(): "Não informada",
                     nomesAcompanhantes,
                     "Quarto " + hospede.getIdQuarto(),
-                    acompanhantes.size()
+                    acompanhantes.size(),
+                    hospede.getStatus() // Adicionar coluna de status na tabela
                 });
             }
         }
